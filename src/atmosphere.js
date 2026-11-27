@@ -24,16 +24,17 @@ function texture(kind,channel,x,y,anisotropy){
  const t=new THREE.CanvasTexture(createSource(kind,channel));t.wrapS=t.wrapT=THREE.RepeatWrapping;t.repeat.set(Math.max(1,x),Math.max(1,y));t.colorSpace=channel==='color'?THREE.SRGBColorSpace:THREE.NoColorSpace;t.anisotropy=anisotropy;return t;
 }
 export function makeAtmosphere(renderer,scene,hemi,key){
- let id='lab',quality='standard',surfaces=[],roomLights=[],environment=null;
+ let id='lab',quality='standard',surfaces=[],roomLights=[],environment=null,powered=false,stress=0;const normal=new THREE.Color(),warning=new THREE.Color(),fog=new THREE.Color();
  const maxAniso=Math.min(8,renderer.capabilities.getMaxAnisotropy());
  function reflect(){if(environment)return environment.texture;try{const source=new RoomEnvironment(),pmrem=new THREE.PMREMGenerator(renderer);try{environment=pmrem.fromScene(source,.05);}finally{source.dispose();pmrem.dispose();}return environment.texture;}catch(err){console.warn('Reflection fallback',err.message);return null;}}
  function configure(){const t=visualTheme(id),detail=graphicsDetail(quality);renderer.toneMappingExposure=t.exposure;hemi.color.setHex(t.ambient);hemi.groundColor.setHex(t.ground);hemi.intensity=t.hemi;key.color.setHex(t.light);key.intensity=t.key;scene.fog.color.setHex(t.fog);scene.fog.near=t.near;scene.fog.far=t.far;scene.background.setHex(t.fog);scene.environment=detail.reflection?reflect():null;scene.environmentIntensity=.45;for(const entry of surfaces){entry.mat.bumpMap=detail.bump?entry.bump:null;entry.mat.needsUpdate=true;}}
  return {
- begin(next,q){for(const entry of surfaces){entry.bump.dispose();}surfaces=[];roomLights=[];id=next;quality=q;configure();},
+ begin(next,q){for(const entry of surfaces){entry.bump.dispose();}surfaces=[];roomLights=[];id=next;quality=q;powered=false;stress=0;configure();},
  quality(q){quality=q;configure();},
  surface(mesh,type,w,h){const t=visualTheme(id),kind=t[type]||'panel',scale=type==='floor'?(kind==='deck'?.9:1.6):type==='wall'?1.7:2;const mat=mesh.material;const x=w/scale,y=h/scale;mat.map=texture(kind,'color',x,y,maxAniso);const bump=texture(kind,'height',x,y,maxAniso);mat.bumpMap=graphicsDetail(quality).bump?bump:null;mat.bumpScale=kind==='stone'?.055:kind==='concrete'?.030:.012;mat.roughness=kind==='stone'||kind==='concrete'?.94:kind==='deck'?.55:.78;mat.metalness=type==='wall'||type==='floor'?t.metal:0;mat.needsUpdate=true;surfaces.push({mat,bump});},
  room(room){const t=visualTheme(id);const light=new THREE.PointLight(t.light,lightLevel(id,false),Math.max(8,Math.max(room.w||8,room.d||8)*.92),2);light.position.set(room.x,2.79,room.z);scene.add(light);roomLights.push(light);return light;},
- power(on){for(const light of roomLights)light.intensity=lightLevel(id,on);},
+ power(on){powered=!!on;},
+ crisis(effect,dt){const t=visualTheme(id),amount=effect?.lightStress||0;stress=THREE.MathUtils.lerp(stress,amount,1-Math.exp(-Math.max(0,dt)*2.5));if(Math.abs(stress-amount)<.0005)stress=amount;normal.setHex(t.light);warning.setHex(effect?.profile?.warning??t.light);for(const light of roomLights){light.color.copy(normal).lerp(warning,stress*.72);light.intensity=lightLevel(id,powered)*(1-.42*stress);}hemi.intensity=t.hemi*(1-.20*stress);key.intensity=t.key*(1-.20*stress);fog.setHex(t.fog);warning.setHex(effect?.profile?.fog??t.fog);scene.fog.color.copy(fog).lerp(warning,stress*.55);scene.fog.near=t.near*(1-.22*stress);scene.fog.far=t.far*(1-.22*stress);scene.background.copy(scene.fog.color);},
  get theme(){return visualTheme(id);}
  };
 }
