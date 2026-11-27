@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {initialState,transition} from '../src/rules.js';
+import {containers,explorationLocation} from '../src/exploration.js';
+const v={exploration:true,current:3,suffix:'14',archiveDigit:'7'};
+test('physical items require opened containers and unlock investigations',()=>{let s=initialState();const go=(id,val)=>{const r=transition(s,id,val,v);assert.ok(r.ok,r.message);s=r.state;};assert.equal(transition(s,'take-cell',null,v).ok,false);assert.equal(transition(s,'power',{order:['cell','switch','resistor'],closed:true,current:3},v).ok,false);for(const c of containers){go(c.id);for(const k of c.items){go('take-'+k);assert.equal(transition(s,'take-'+k,null,v).ok,false);assert.deepEqual(explorationLocation('take-'+k),[c.x,c.z]);}}assert.equal(s.inventory.length,4);go('power',{order:['cell','switch','resistor'],closed:true,current:3});go('microscope',{objective:40,focus:50,specimen:'plant'});assert.equal(s.power,true);assert.ok(s.solved.includes('microscope'));assert.equal(initialState().inventory.length,0);});
+test('classic unenhanced missions do not require new items',()=>{assert.equal(transition(initialState(),'power',{order:['cell','switch','resistor'],closed:true,current:3}).ok,true);});
