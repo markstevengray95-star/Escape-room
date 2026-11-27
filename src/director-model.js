@@ -4,9 +4,9 @@ export function createDirectorModel(){
  let last=null,lastProgressAt=0,lastHintAt=-Infinity,thresholds=new Set(),lastEventAt=-Infinity;
  const event=(kind,text,priority=1)=>({kind,text,priority});
  function reset(){last=null;lastProgressAt=0;lastHintAt=-Infinity;thresholds=new Set();lastEventAt=-Infinity;}
- function tick({scenario='lab',crisis,state={},remaining=1800,now=0,active=true,objective=''}={}){
+ function tick({scenario='lab',crisis,state={},bonus=null,remaining=1800,now=0,active=true,objective=''}={}){
   if(!active||!crisis?.enabled)return null;
-  const snapshot={stage:crisis.stage,progress:crisis.progress,restored:crisis.restored||0,paused:crisis.paused,power:!!state.power,door:!!state.door,ready:(crisis.systems||[]).filter(x=>x.ready&&!x.online).length,remaining};
+  const snapshot={stage:crisis.stage,progress:crisis.progress,restored:crisis.restored||0,paused:crisis.paused,bonus:bonus?.id||null,power:!!state.power,door:!!state.door,ready:(crisis.systems||[]).filter(x=>x.ready&&!x.online).length,remaining};
   const old=last;last=snapshot;
   if(!old){lastProgressAt=now;if(crisis.paused)return null;for(const n of [60,30,10])if(remaining<=n)thresholds.add(n);lastEventAt=now;return event('briefing',crisisDefinition(scenario).brief+' '+crisis.message,2);}
   if(snapshot.paused){if(!old.paused)return event('pause','Mission paused by your teacher.',3);return null;}
@@ -17,6 +17,7 @@ export function createDirectorModel(){
   const crossed=[10,30,60].find(n=>remaining>0&&remaining<=n&&old.remaining>n&&!thresholds.has(n));
   if(crossed){for(const n of [60,30,10])if(remaining<=n)thresholds.add(n);lastEventAt=now;return event('countdown',crossed+' seconds remaining. '+(crossed===10?'Finalise your mission.':'Complete the remaining objectives.'),4);}
   if(snapshot.stage>old.stage){lastEventAt=now;return event('warning',crisis.message,3);}
+  if(snapshot.bonus&&snapshot.bonus!==old.bonus){lastEventAt=now;return event('bonus','Optional emergency challenge available. Open the radio challenge to earn a reward.',2);}
   if(snapshot.restored>old.restored){lastEventAt=now;return event('repair',snapshot.restored===4?'All four systems online. Enter the final escape code.':snapshot.restored+' of four systems restored. Excellent work, team.',2);}
   if(snapshot.power&&!old.power){lastEventAt=now;return event('repair','Emergency supply restored. Continue to the control chamber.',2);}
   if(snapshot.ready>old.ready&&now-lastEventAt>8000){lastEventAt=now;return event('ready','A subsystem is ready to activate. Check the final console.',1);}
