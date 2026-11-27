@@ -8,7 +8,8 @@ import {createTeacher,startDisplay} from './teacher.js';
 import {createBuilder} from './builder.js';
 import {profiles,loadPreferences,savePreferences,normalizePreferences,settingsHTML} from './preferences.js';
 import {makeAudio} from './audio.js';
-import {equipmentModel,floorTexture} from './visuals.js';
+import {equipmentModel} from './visuals.js';
+import {makeAtmosphere} from './atmosphere.js';
 import {createCharacter,animateCharacter,createHands} from './characters.js';
 import {loadBlenderAsset,disposeAsset} from './blender-assets.js';
 import {containers,items,needed} from './exploration.js';
@@ -28,6 +29,7 @@ const camera=new THREE.PerspectiveCamera(70,innerWidth/innerHeight,.06,50);camer
 const firstPersonHands=createHands();
 camera.position.set(spawn.x,1.65,spawn.z);let yaw=-Math.PI/2,pitch=0;
 const hemi=new THREE.HemisphereLight(0xc9e8ff,0x424951,2.0);scene.add(hemi);const keyLight=new THREE.DirectionalLight(0xdce9ff,.65);keyLight.position.set(-5,9,5);keyLight.castShadow=true;keyLight.shadow.mapSize.set(1024,1024);Object.assign(keyLight.shadow.camera,{left:-16,right:16,top:15,bottom:-15,near:.1,far:40});keyLight.shadow.bias=-.0004;scene.add(keyLight);
+const atmosphere=makeAtmosphere(renderer,scene,hemi,keyLight);
 const mats={wall:0x667c86,floor:0x35464b,trim:0x26353d,bench:0x9baab0,steel:0x4f626d,glass:0x79bdc9,green:0x43bca4,red:0xe27a51,yellow:0xf2d276};
 const material=(c,emissive=0)=>new THREE.MeshStandardMaterial({color:c,roughness:.66,metalness:.12,emissive,emissiveIntensity:.65});
 const boxes=[],solidMeshes=[],targets=new Map();
@@ -41,7 +43,7 @@ function label(text,x,y,z,rotation=0,scale=1,parent=scene){
  const m=new THREE.Mesh(new THREE.PlaneGeometry(2.25*scale,.56*scale),new THREE.MeshBasicMaterial({map:tex,side:THREE.DoubleSide}));m.position.set(x,y,z);m.rotation.y=rotation;parent.add(m);return m;
 }
 function interactable(id,name,parts){for(const m of parts){targets.set(m,{id,name});}return parts[0];}
-function wall(w,d,x,z){cube(w,3.2,d,x,1.6,z,mats.wall,{solid:true});}
+function wall(w,d,x,z){const mesh=cube(w,3.2,d,x,1.6,z,mats.wall,{solid:true});atmosphere.surface(mesh,'wall',Math.max(w,d),3.2);return mesh;}
 let dx,dz,drawer,handle,note,breaker,archive,exit;
 const gateMeshes=new Map(),stationMeshes=new Map(),animatedEquipment=[];
 let assetGeneration=0,assetCount=0,inspectionCleanup=null;const caseModels=new Map();
@@ -53,12 +55,12 @@ function buildScene(id,mission=null){
  const epoch=++assetGeneration;assetCount=0;caseModels.clear();$('asset-status').textContent='Standard models';
  layout=scenarioLayout(id);if(mission){layout.stations=layout.stations.map(p=>({...p,name:mission.labels[p.id]||p.name}));}({spawn,rooms,walls,gates,furniture,objects,stations,roomAt}=layout);
  for(const child of [...scene.children]){if(child===hemi||child===keyLight)continue;scene.remove(child);disposeAsset(child);}boxes.length=0;solidMeshes.length=0;targets.clear();avatars.clear();
- mats.wall=layout.theme.wall;mats.floor=layout.theme.floor;scene.background.setHex(layout.theme.floor);scene.fog.color.setHex(layout.theme.floor);hemi.color.setHex(layout.theme.light);
+ mats.wall=layout.theme.wall;mats.floor=layout.theme.floor;atmosphere.begin(id,preferences.quality);
  camera.position.set(spawn.x,1.65,spawn.z);yaw=spawn.yaw;pitch=0;
  document.querySelector('.brand small').textContent=(mission?.title||layout.theme.title).toUpperCase();
-const floor=cube(layout.width,.16,layout.depth,0,-.08,0,mats.floor);const tile=floorTexture(id);tile.repeat.set(layout.width,layout.depth);floor.material.map=tile;floor.material.needsUpdate=true;const ceiling=cube(layout.width,.15,layout.depth,0,3.28,0,id==='tomb'?0x88745d:0x8b9aa2);ceiling.castShadow=false;
-for(const room of rooms){const rf=cube((room.w??7.75*layout.sx)-.12,.025,(room.d??7.75*layout.sz)-.12,room.x,.014,room.z,room.color);const tex=floorTexture(id);tex.repeat.set(8,8);rf.material.map=tex;rf.material.needsUpdate=true;label(room.name.toUpperCase(),room.x,2.65,room.bounds?(room.z<0?room.bounds[3]-.14:room.bounds[2]+.14):room.z<0?-2.14*layout.sz:2.14*layout.sz,room.z<0?Math.PI:0,.95);for(const x of [room.x]){cube(1.8,.1,.35,x,3.12,room.z,0xd5edeb,{glow:0x73a09a});const light=new THREE.PointLight(layout.theme.light,14,8,2);light.position.set(x,2.8,room.z);scene.add(light);}}
-for(const w of walls){wall(w.w,w.d,w.x,w.z);cube(w.w+.025,.14,w.d+.025,w.x,.13,w.z,mats.trim);cube(w.w+.025,.09,w.d+.025,w.x,2.98,w.z,layout.theme.accent);}
+const floor=cube(layout.width,.16,layout.depth,0,-.08,0,mats.floor);atmosphere.surface(floor,'floor',layout.width,layout.depth);const ceiling=cube(layout.width,.15,layout.depth,0,3.28,0,id==='tomb'?0x88745d:0x8b9aa2);ceiling.castShadow=false;atmosphere.surface(ceiling,'ceiling',layout.width,layout.depth);
+for(const room of rooms){const rf=cube((room.w??7.75*layout.sx)-.12,.025,(room.d??7.75*layout.sz)-.12,room.x,.014,room.z,room.color);atmosphere.surface(rf,'floor',room.w??7.75*layout.sx,room.d??7.75*layout.sz);label(room.name.toUpperCase(),room.x,2.65,room.bounds?(room.z<0?room.bounds[3]-.14:room.bounds[2]+.14):room.z<0?-2.14*layout.sz:2.14*layout.sz,room.z<0?Math.PI:0,.95);for(const x of [room.x]){cube(1.8,.1,.35,x,3.12,room.z,atmosphere.theme.fixture,{glow:atmosphere.theme.fixture});atmosphere.room(room);}}
+for(const w of walls){wall(w.w,w.d,w.x,w.z);cube(w.w+.025,.14,w.d+.025,w.x,.13,w.z,mats.trim);cube(w.w+.025,.09,w.d+.025,w.x,2.98,w.z,layout.theme.accent);}if(id!=='tomb'){const passage=layout.rooms[0].bounds?Math.abs(layout.rooms[0].bounds[3]):2*layout.sz;for(const z of [-passage+.28,passage-.28])cube(layout.width-.55,.008,.075,0,.007,z,atmosphere.theme.accent);}
 for(let x=-10*layout.sx;x<=10*layout.sx;x+=4*layout.sx){cube(2.6,.12,.4,x,3.1,0,0xc9e7e7,{glow:0x668f88});const l=new THREE.PointLight(layout.theme.light,13,8,2);l.position.set(x,2.8,0);scene.add(l);}
 for(const z of [-1.75*layout.sz,1.75*layout.sz])cube(23.5*layout.sx,.025,.075,0,.03,z,0xe4b85f);
 for(const b of furniture){if(id==='tomb'&&b.asset==='pillar'){const base=cube(b.w,2.82,b.d,b.x,1.41,b.z,0x8a7356,{solid:true});architectureAsset('pillar',b.w,2.82,b.d,b.x,0,b.z,epoch,{replace:base,pack:'tomb'});continue;}if(b.prop){cube(b.w,1.25,b.d,b.x,.625,b.z,layout.theme.accent,{solid:true});continue;}const parts=[cube(b.w,.12,b.d,b.x,1.04,b.z,mats.bench,{solid:true})];for(const dx of [-.6,.6])for(const dz of [-.42,.42])parts.push(cube(.13,.96,.13,b.x+dx,.48,b.z+dz,mats.steel));for(let i=0;i<3;i++){const v=new THREE.Mesh(new THREE.CylinderGeometry(.09,.12,.27,12),material([0x64aaa6,0x9d93bd,0xd5aa63][i]));v.position.set(b.x+(i-1)*.32,1.24,b.z);scene.add(v);parts.push(v);}if(id==='lab')attachBench(b,parts,epoch,b.z>6&&b.x<-5);if(['space','bio','chem','blackout','tomb'].includes(id)&&b.asset){loadBlenderAsset(b.asset,b.w,2.35,b.d,b.asset==='fume-hood'?'lab-architecture':id).then(root=>{if(!root)return;if(epoch!==assetGeneration){disposeAsset(root);return;}for(const part of parts){if(solidMeshes.includes(part)){part.material.transparent=true;part.material.opacity=0;part.material.depthWrite=false;part.castShadow=false;}else part.visible=false;}root.position.x+=b.x;root.position.z+=b.z;scene.add(root);assetReady();});}}
@@ -82,6 +84,7 @@ const ray=new THREE.Raycaster();ray.far=2.45;
 function lookTarget(){ray.setFromCamera(new THREE.Vector2(0,0),camera);const list=[...new Set([...solidMeshes,...targets.keys()])].filter(o=>{for(let p=o;p;p=p.parent)if(!p.visible)return false;return true;});const hits=ray.intersectObjects(list,false);return hits.length?targets.get(hits[0].object)||null:null;}
 function notify(msg){$('toast').textContent=msg;toastUntil=performance.now()+6000;}
 function sync(){
+ atmosphere.power(state.power);
  for(const [id,c] of caseModels){c.group.visible=!!variant.exploration;const opened=state.opened?.includes(id);for(const [k,o] of c.contents)o.visible=!!opened&&!state.inventory?.includes(k);if(preferences.reducedMotion)c.lidPivot.rotation.x=opened?-1.8:0;}
  $('inventory-button').hidden=!variant.exploration;$('inventory-count').textContent=(state.inventory||[]).length+'/4';
  if(preferences.reducedMotion){drawer.position.z=state.drawer?dz-.4:dz;handle.position.z=state.drawer?dz-.5:dz-.1;}
@@ -95,7 +98,7 @@ function show(html){inspectionCleanup?.();inspectionCleanup=null;modal=true;audi
 function hide(){inspectionCleanup?.();inspectionCleanup=null;modal=false;audio.update(running);overlay.hidden=true;panel.innerHTML='';canvas.focus();}
 function button(id,fn){$(id)?.addEventListener('click',fn);}
 function escapeText(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function applyPreferences(){const p=profiles[preferences.quality];renderer.setPixelRatio(Math.min(devicePixelRatio,p.pixelRatio));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=p.shadows;$('map').hidden=!preferences.showMap;document.body.classList.toggle('reduced-motion',preferences.reducedMotion);audio.update(running&&!modal);}
+function applyPreferences(){const p=profiles[preferences.quality];renderer.setPixelRatio(Math.min(devicePixelRatio,p.pixelRatio));renderer.setSize(innerWidth,innerHeight);renderer.shadowMap.enabled=p.shadows;atmosphere.quality(preferences.quality);$('map').hidden=!preferences.showMap;document.body.classList.toggle('reduced-motion',preferences.reducedMotion);audio.update(running&&!modal);}
 function openSettings(back){show(settingsHTML(preferences));button('settings-done',()=>{preferences=normalizePreferences({quality:$('quality').value,sound:$('sound').checked,volume:Number($('volume').value),sensitivity:Number($('sensitivity').value),reducedMotion:$('reduced-motion').checked,keyboardLook:$('keyboard-look').checked,showMap:$('show-map').checked,showHands:$('show-hands').checked});savePreferences(preferences);audio.unlock();applyPreferences();back();});}
 function home(){show('<div class="eyebrow">ESCAPE LAB · CLASSROOM EDITION</div><h1 id="dialog-title">Escape Lab</h1><p>Explore, discover evidence and solve science puzzles together.</p><div class="mode"><button class="primary" id="join-mode">Join a team</button><button id="host-mode">Host a class</button><button id="builder-mode">Create an escape room</button><button id="home-settings">Game settings</button><button id="solo-mode">Solo practice</button>'+(net.session?'<button id="resume-mode">Reconnect to session</button>':'')+'</div>');button('join-mode',()=>roomForm(false));button('host-mode',()=>roomForm(true));button('builder-mode',()=>builder.open());button('home-settings',()=>openSettings(home));button('solo-mode',()=>{net.clear();multiplayer=false;startScreen();});button('resume-mode',()=>{multiplayer=true;poll();});}
 function curriculumControls(){const options=o=>Object.entries(o).map(([v,l])=>'<option value="'+v+'">'+l+'</option>').join('');return '<label for="mode">Game content</label><select id="mode"><option value="classic">Mixed practical investigations</option><option value="curriculum">Curriculum question stations</option><option value="custom">Custom question stations</option></select><label><input id="exploration" type="checkbox" checked> Enhanced exploration (Laboratory Lockdown / practical mode)</label><div id="filters" hidden><label for="course">Course / tier</label><select id="course">'+options(courses)+'</select><label for="subject">Subject</label><select id="subject"><option value="all">All subjects</option>'+options(subjects)+'</select><label for="topic">Topic</label><select id="topic"><option value="all">All topics</option>'+options(topics)+'</select><p>Up to 11 distinct questions per team. A narrow topic may create a shorter game.</p></div><div id="custom-fields" hidden><label for="custom">One question per line</label><textarea id="custom" rows="6" maxlength="12000" placeholder="Question | correct answer | wrong 1 | wrong 2 | wrong 3 | explanation"></textarea><p>1–20 questions; up to 11 randomly selected. The circuit and security-code sequence remains in every mode.</p></div>';}
