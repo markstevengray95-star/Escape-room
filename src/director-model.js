@@ -14,7 +14,7 @@ export function createDirectorModel(){
   if(old.paused){lastProgressAt=now;lastEventAt=now;return event('resume','Mission resumed. Continue your investigations.',2);}
   if(snapshot.progress>old.progress||snapshot.restored>old.restored)lastProgressAt=now;
   // An extension may re-arm future thresholds, but never replays crossed thresholds on every poll.
-  if(remaining>old.remaining+60)for(const n of [60,30,10])if(remaining>n)thresholds.delete(n);
+  if(remaining>old.remaining)for(const n of [60,30,10])if(remaining>n)thresholds.delete(n);
   const crossed=[10,30,60].find(n=>remaining>0&&remaining<=n&&old.remaining>n&&!thresholds.has(n));
   if(crossed){for(const n of [60,30,10])if(remaining<=n)thresholds.add(n);lastEventAt=now;return event('countdown',crossed+' seconds remaining. '+(crossed===10?'Finalise your mission.':'Complete the remaining objectives.'),4);}
   if(snapshot.stage>old.stage){lastEventAt=now;return event('warning',crisis.message,3);}
