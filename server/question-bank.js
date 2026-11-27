@@ -1,3 +1,4 @@
+import {aqaQuestions,assignAqaMission} from '../src/aqa-missions.js';
 import {normalizeMission} from '../src/builder-model.js';
 import {missionQuestions} from './mission-bank.js';
 import {courses,subjects,topics,stationOrder} from '../src/curriculum.js';
@@ -13,6 +14,7 @@ export function parseCustom(text){
  return lines.map((line,i)=>{const parts=line.split('|').map(s=>s.trim());if(parts.length!==6||parts.some(x=>!x||x.length>350)||new Set(parts.slice(1,5).map(x=>x.toLowerCase())).size!==4)throw Error('Invalid custom question on line '+(i+1)+'. Use six distinct fields.');const [prompt,correct,a,b,c,explanation]=parts;return{id:'custom'+i,subject:'W',topic:'practical',level:'custom',prompt,correct,choices:[correct,a,b,c],explanation};});
 }
 export function config(input={}){
+ if(input.mode==='aqa'){const pool=aqaQuestions(input.scenario||'lab');if(!pool.length)throw Error('Unknown AQA mission.');return {mode:'aqa',scenario:input.scenario||'lab',label:'AQA GCSE Combined Science: Trilogy (8464) · shared tier content',pool};}
  if(input.mode==='builder'){const mission=normalizeMission(input.mission);return {mode:'builder',label:'Teacher-built mission',mission,pool:mission.puzzles};}
  if((!input.mode||input.mode==='classic')&&input.scenario&&input.scenario!=='lab'){const pool=missionQuestions(input.scenario);if(!pool.length)throw Error('Unknown mission.');return {mode:'mission',scenario:input.scenario,label:'Scenario science challenges',pool};}
  if(input.mode!=='curriculum'&&input.mode!=='custom')return {mode:'classic',label:'Mixed practical investigations'};
@@ -25,10 +27,11 @@ export function config(input={}){
 }
 export function assignQuestions(settings,randomInt){
  if(settings.mode==='classic')return {};
+ if(settings.mode==='aqa')return assignAqaMission(settings.scenario,randomInt);
  const shuffled=(a)=>{const out=[...a];for(let i=out.length-1;i>0;i--){const j=randomInt(0,i+1);[out[i],out[j]]=[out[j],out[i]];}return out;};
  if(settings.mode==='builder'){const questions=Object.fromEntries(settings.mission.puzzles.map(p=>[p.station,{id:p.station,subject:p.subject,topic:p.topic,level:'custom',prompt:p.prompt,choices:shuffled(p.choices),correct:p.choices[p.correctIndex],explanation:p.explanation,clue:p.clue}]));return {requiredIds:Object.keys(questions),questions,gateRequires:settings.mission.gateRequires};}
  if(settings.mode==='mission'&&['space','bio','tomb'].includes(settings.scenario)){const ids=settings.scenario==='space'?['moments','indicator','energy','variables','density','graph','equation','microscope']:settings.scenario==='bio'?['microscope','indicator','moments','equation','osmosis','graph','separation','energy']:['density','moments','graph','microscope','equation','energy','indicator','separation'];const questions=Object.fromEntries(settings.pool.map((q,i)=>[ids[i],{...q,choices:shuffled(q.choices)}]));return {requiredIds:Object.keys(questions),questions};}
  const questions=Object.fromEntries(shuffled(settings.pool).slice(0,stationOrder.length).map((q,i)=>[stationOrder[i],{...q,choices:shuffled(q.choices)}]));
  return {requiredIds:Object.keys(questions),questions};
 }
-export const publicQuestions=q=>Object.fromEntries(Object.entries(q||{}).map(([id,{prompt,choices,subject,topic,level}])=>[id,{prompt,choices,subject,topic,level}]));
+export const publicQuestions=q=>Object.fromEntries(Object.entries(q||{}).map(([id,{prompt,choices,subject,topic,level,spec}])=>[id,{prompt,choices,subject,topic,level,...(spec?{spec}:{})}]));
