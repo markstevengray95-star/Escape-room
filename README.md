@@ -61,3 +61,6 @@ Separate 30 × 24 m chemistry facility with asymmetric wings, offset safety acce
 
 ## Escape Lab 2.0 — Total Blackout
 Independent 34 × 26 m industrial environment with turbine hall, transformer bay, grid control, workshop, spare parts and diagnostics. Run `Generate Power Station Assets.bat` and commit `public/models/blackout` (nine original decorative model types). Verify with `python blender/verify_assets.py --blackout`. The educational electricity and energy questions are simulations, not real operating procedures. Dedicated 3D machine operation and browser verification remain outstanding.
+
+## Escape Lab 2.0 — The Forgotten Tomb
+Independent 28 × 28 m fictional archaeological layout with a pillared access passage, six galleries, stone seals, replica artefacts and original abstract inscriptions. Ten original Blender model types; run `Generate Tomb Assets.bat` and commit `public/models/tomb`. Verify with `python blender/verify_assets.py --tomb`. Science questions are assigned to named stations. Models are decorative; bespoke physical tomb puzzles and full browser testing are still outstanding.
