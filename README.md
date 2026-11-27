@@ -37,3 +37,6 @@ Create an escape room from any of the six templates, assign 1–11 custom multip
 
 ## Phase 9 visual and accessibility pass
 Original procedural equipment meshes (microscope, test tubes, lever, balance and cylinder, motor and computer instruments), tiled surfaces, ceilings, wall trims, animated character limbs, moving equipment, animated drawer and gate movement, status LEDs. Low/standard/high pixel ratio and frame pacing settings; high enables directional shadows. Optional synthesized footsteps, ambience, keypad/puzzle and success sounds, off by default. Persisted volume, look sensitivity, reduced motion, keyboard look and minimap visibility. No external assets. Actual visual rendering, audio and browser device performance still require verification.
+
+## Escape Lab 2.0 — Blender pipeline
+See [Blender setup](blender/README.md). Generate 12 original GLB equipment/furniture assets using the included Blender Python script. Laboratory Lockdown loads the local exports with automatic procedural fallbacks; other environments unchanged. Source .blend files are generated locally and excluded from Git. The Blender script and loader are implemented; the actual exports need to be generated using Blender before the enhanced visuals appear.

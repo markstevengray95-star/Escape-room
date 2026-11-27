@@ -9,6 +9,7 @@ import {createBuilder} from './builder.js';
 import {profiles,loadPreferences,savePreferences,normalizePreferences,settingsHTML} from './preferences.js';
 import {makeAudio} from './audio.js';
 import {equipmentModel,avatarModel,animateAvatar,floorTexture} from './visuals.js';
+import {loadBlenderAsset,disposeAsset} from './blender-assets.js';
 import {courses,subjects,topics,required,totalFor} from './curriculum.js';
 import {scenarioLayout,scenarios} from './scenarios.js';
 let layout=scenarioLayout('lab'),{spawn,rooms,walls,gates,furniture,objects,stations,roomAt}=layout;
@@ -39,9 +40,14 @@ function interactable(id,name,parts){for(const m of parts){targets.set(m,{id,nam
 function wall(w,d,x,z){cube(w,3.2,d,x,1.6,z,mats.wall,{solid:true});}
 let dx,dz,drawer,handle,note,breaker,archive,exit;
 const gateMeshes=new Map(),stationMeshes=new Map(),animatedEquipment=[];
+let assetGeneration=0,assetCount=0;
+function assetReady(){assetCount++;$('asset-status').textContent='Blender models: '+assetCount;}
+function attachEquipment(p,equipment,epoch){loadBlenderAsset(p.id,.60,.68,.60).then(root=>{if(!root)return;if(epoch!==assetGeneration){disposeAsset(root);return;}for(const part of equipment.parts){if(part!==equipment.status){part.visible=false;targets.delete(part);}}equipment.group.add(root);const parts=[];root.traverse(o=>{if(o.isMesh)parts.push(o);});interactable(p.id,p.name,parts);assetReady();});}
+function attachBench(b,parts,epoch){loadBlenderAsset('bench',b.w,1.1,b.d).then(root=>{if(!root)return;if(epoch!==assetGeneration){disposeAsset(root);return;}for(const p of parts){if(solidMeshes.includes(p)){p.material.transparent=true;p.material.opacity=0;p.material.depthWrite=false;p.castShadow=false;}else p.visible=false;}root.position.x+=b.x;root.position.z+=b.z;scene.add(root);assetReady();});}
 function buildScene(id,mission=null){
+ const epoch=++assetGeneration;assetCount=0;$('asset-status').textContent='Standard models';
  layout=scenarioLayout(id);if(mission){layout.stations=layout.stations.map(p=>({...p,name:mission.labels[p.id]||p.name}));}({spawn,rooms,walls,gates,furniture,objects,stations,roomAt}=layout);
- for(const child of [...scene.children]){if(child===hemi||child===keyLight)continue;scene.remove(child);child.traverse(o=>{if(o.isMesh){o.geometry.dispose();o.material.map?.dispose();o.material.dispose();}});}boxes.length=0;solidMeshes.length=0;targets.clear();avatars.clear();
+ for(const child of [...scene.children]){if(child===hemi||child===keyLight)continue;scene.remove(child);disposeAsset(child);}boxes.length=0;solidMeshes.length=0;targets.clear();avatars.clear();
  mats.wall=layout.theme.wall;mats.floor=layout.theme.floor;scene.background.setHex(layout.theme.floor);scene.fog.color.setHex(layout.theme.floor);hemi.color.setHex(layout.theme.light);
  camera.position.set(spawn.x,1.65,spawn.z);yaw=spawn.yaw;pitch=0;
  document.querySelector('.brand small').textContent=(mission?.title||layout.theme.title).toUpperCase();
@@ -50,7 +56,7 @@ for(const room of rooms){const rf=cube(7.75*layout.sx,.025,7.75*layout.sz,room.x
 for(const w of walls){wall(w.w,w.d,w.x,w.z);cube(w.w+.025,.14,w.d+.025,w.x,.13,w.z,mats.trim);cube(w.w+.025,.09,w.d+.025,w.x,2.98,w.z,layout.theme.accent);}
 for(let x=-10*layout.sx;x<=10*layout.sx;x+=4*layout.sx){cube(2.6,.12,.4,x,3.1,0,0xc9e7e7,{glow:0x668f88});const l=new THREE.PointLight(layout.theme.light,13,8,2);l.position.set(x,2.8,0);scene.add(l);}
 for(const z of [-1.75*layout.sz,1.75*layout.sz])cube(23.5*layout.sx,.025,.075,0,.03,z,0xe4b85f);
-for(const b of furniture){if(b.prop){cube(b.w,1.25,b.d,b.x,.625,b.z,layout.theme.accent,{solid:true});continue;}cube(b.w,.12,b.d,b.x,1.04,b.z,mats.bench,{solid:true});for(const dx of [-.6,.6])for(const dz of [-.42,.42])cube(.13,.96,.13,b.x+dx,.48,b.z+dz,mats.steel);for(let i=0;i<3;i++){const v=new THREE.Mesh(new THREE.CylinderGeometry(.09,.12,.27,12),material([0x64aaa6,0x9d93bd,0xd5aa63][i]));v.position.set(b.x+(i-1)*.32,1.24,b.z);scene.add(v);}}
+for(const b of furniture){if(b.prop){cube(b.w,1.25,b.d,b.x,.625,b.z,layout.theme.accent,{solid:true});continue;}const parts=[cube(b.w,.12,b.d,b.x,1.04,b.z,mats.bench,{solid:true})];for(const dx of [-.6,.6])for(const dz of [-.42,.42])parts.push(cube(.13,.96,.13,b.x+dx,.48,b.z+dz,mats.steel));for(let i=0;i<3;i++){const v=new THREE.Mesh(new THREE.CylinderGeometry(.09,.12,.27,12),material([0x64aaa6,0x9d93bd,0xd5aa63][i]));v.position.set(b.x+(i-1)*.32,1.24,b.z);scene.add(v);parts.push(v);}if(id==='lab')attachBench(b,parts,epoch);}
 gateMeshes.clear();
 for(const g of gates){const mesh=cube(g.w,2.45,g.d,g.x,1.225,g.z,0x365761);const tag=label(g.name.toUpperCase(),g.x,1.78,g.z+(g.z<0?.13:-.13),g.z<0?0:Math.PI,.8);const b={x:g.x,z:g.z,w:g.w,d:g.d};boxes.push(b);solidMeshes.push(mesh);interactable(g.id,g.name,[mesh,tag]);gateMeshes.set(g.id,{mesh,tag,b});cube(g.w,.75,.22,g.x,2.83,g.z,mats.trim);}
 [dx,dz]=objects.drawer;cube(1.15,.95,.75,dx,.475,dz+.45,mats.steel,{solid:true});drawer=cube(1.05,.25,.12,dx,.7,dz,0x82959b);handle=cube(.35,.06,.12,dx,.7,dz-.1,0x243940);interactable('drawer','Storage cabinet drawer',[drawer,handle]);
@@ -59,7 +65,7 @@ const [bx,bz]=objects.power;breaker=cube(.8,.9,.18,bx,1.55,bz,mats.red);const br
 const terminal=(id,name,c)=>{const [x,z]=objects[id];const mesh=cube(1.1,.85,.23,x,1.45,z,c);const tag=label(name.toUpperCase(),x,1.65,z+(z<0?.14:-.14),z<0?0:Math.PI,.65);interactable(id,name,[mesh,tag]);return mesh;};
 exit=terminal('exit',layout.theme.exit,0x3e9c88);archive=terminal('archive',layout.theme.archive,0x9b79ba);
 stationMeshes.clear();animatedEquipment.length=0;
-for(const p of stations){const pedestal=cube(.65,1.05,.65,p.x,.525,p.z,0x4b616c,{solid:true});cube(.62,.055,.62,p.x,1.05,p.z,0xa1b1b8);const equipment=equipmentModel(p.id,p);scene.add(equipment.group);const tag=label(p.name.toUpperCase(),p.x,1.95,p.z+.29,0,.57);interactable(p.id,p.name,[...equipment.parts,tag,pedestal]);stationMeshes.set(p.id,equipment.status);if(equipment.moving)animatedEquipment.push({id:p.id,part:equipment.moving});}
+for(const p of stations){const pedestal=cube(.65,1.05,.65,p.x,.525,p.z,0x4b616c,{solid:true});cube(.62,.055,.62,p.x,1.05,p.z,0xa1b1b8);const equipment=equipmentModel(p.id,p);scene.add(equipment.group);const tag=label(p.name.toUpperCase(),p.x,1.95,p.z+.29,0,.57);interactable(p.id,p.name,[...equipment.parts,tag,pedestal]);stationMeshes.set(p.id,equipment.status);if(equipment.moving)animatedEquipment.push({id:p.id,part:equipment.moving});if(id==='lab')attachEquipment(p,equipment,epoch);}
 // Distinct original procedural props, placed above benches or on walls so they do not obstruct navigation.
 for(const room of rooms){if(layout.id==='space'){for(let i=0;i<3;i++){const star=new THREE.Mesh(new THREE.SphereGeometry(.035,5,4),material(0xc9ddff,0xc9ddff));star.position.set(room.x+(i-1)*.65,2.8,room.z);scene.add(star);}cube(2.1,.8,.05,room.x,2.2,room.z+(room.z<0?-3.85:3.85)*layout.sz,0x192a45,{glow:0x285b82});}else if(layout.id==='bio'){for(let i=0;i<2;i++){const tank=new THREE.Mesh(new THREE.CylinderGeometry(.27,.27,.85,18),material(0x60b895));tank.position.set(room.x+(i-.5)*.7,2.1,room.z+(room.z<0?-3.4:3.4)*layout.sz);scene.add(tank);}}else if(layout.id==='chem'){for(let i=0;i<4;i++)cube(.22,.35,.2,room.x+(i-1.5)*.36,2.15,room.z+(room.z<0?-3.65:3.65)*layout.sz,[0xc6aa6a,0x91c6a0,0xb196cb,0x75a6c8][i]);}else if(layout.id==='blackout'){for(let i=0;i<3;i++)cube(.25,.25,2,room.x+(i-1)*.6,2.95,room.z,0xd2a04d);}else if(layout.id==='tomb'){for(let i=0;i<4;i++){cube(.45,.18,.04,room.x+(i-1.5)*.5,2.1,room.z+(room.z<0?-3.8:3.8)*layout.sz,0xc8a36b);}}}
 }
