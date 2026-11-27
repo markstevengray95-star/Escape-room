@@ -1,4 +1,4 @@
-param([ValidateSet('generate_lab.py','generate_architecture.py','generate_space.py')][string]$Script='generate_lab.py')
+param([ValidateSet('generate_lab.py','generate_architecture.py','generate_space.py','generate_bio.py')][string]$Script='generate_lab.py')
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 $exe = $env:BLENDER_EXE
