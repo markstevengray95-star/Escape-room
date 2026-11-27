@@ -1,3 +1,4 @@
+import {validateBench} from './experiment-model.js';
 export const stations=[
 {id:'microscope',name:'Microscope',x:-9.5,z:-6,color:0x628bb0,clue:'Plant cell identified'},
 {id:'indicator',name:'Indicator bench',x:-9.5,z:5.5,color:0x8e77b6,clue:'Acid identified'},
@@ -13,6 +14,7 @@ export const stations=[
 export const TOTAL_EVIDENCE=stations.length+5;
 export function validateStation(id,v,variant={}){
  if(!v||typeof v!=='object'||Array.isArray(v))return {ok:false,message:'Complete the equipment controls first.'};
+ if(variant.exploration&&!validateBench(id,v,variant))return {ok:false,message:'Complete the physical equipment setup and measurements before confirming.'};
  const exact=(a,b)=>typeof a==='number'&&Number.isFinite(a)&&Math.abs(a-b)<1e-8;
  const tests={
  microscope:()=>v.objective===40&&typeof v.focus==='number'&&v.focus>=47&&v.focus<=53&&v.specimen==='plant',
