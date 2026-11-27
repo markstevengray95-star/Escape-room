@@ -8,7 +8,7 @@ export function createApi(store=createStore()){
   if(req.method!=='POST')return send(405,{error:'Use POST.'});
   try{
    const origin=req.headers.origin;if(origin&&new URL(origin).host!==req.headers.host) return send(403,{error:'Origin not allowed.'});
-   let body='';for await(const chunk of req){body+=chunk;if(body.length>16000)return send(413,{error:'Request too large.'});}
+   let body='';for await(const chunk of req){body+=chunk;if(body.length>60000)return send(413,{error:'Request too large.'});}
    const data=JSON.parse(body||'{}'),key=req.headers.authorization?.replace(/^Bearer /,'');
    const route=path.split('/').at(-1);
    if(route==='create'||route==='join'){const ip=req.socket.remoteAddress||'local',now=Date.now(),bucket=limits.get(ip)||{start:now,count:0};if(now-bucket.start>60000){bucket.start=now;bucket.count=0;}bucket.count++;limits.set(ip,bucket);if(limits.size>2000)for(const [k,v] of limits)if(now-v.start>60000)limits.delete(k);if(bucket.count>60)return send(429,{error:'Too many requests. Try again shortly.'});}
