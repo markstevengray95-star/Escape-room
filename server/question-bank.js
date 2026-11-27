@@ -27,7 +27,7 @@ export function assignQuestions(settings,randomInt){
  if(settings.mode==='classic')return {};
  const shuffled=(a)=>{const out=[...a];for(let i=out.length-1;i>0;i--){const j=randomInt(0,i+1);[out[i],out[j]]=[out[j],out[i]];}return out;};
  if(settings.mode==='builder'){const questions=Object.fromEntries(settings.mission.puzzles.map(p=>[p.station,{id:p.station,subject:p.subject,topic:p.topic,level:'custom',prompt:p.prompt,choices:shuffled(p.choices),correct:p.choices[p.correctIndex],explanation:p.explanation,clue:p.clue}]));return {requiredIds:Object.keys(questions),questions,gateRequires:settings.mission.gateRequires};}
- if(settings.mode==='mission'&&settings.scenario==='space'){const ids=['moments','indicator','energy','variables','density','graph','equation','microscope'];const questions=Object.fromEntries(settings.pool.map((q,i)=>[ids[i],{...q,choices:shuffled(q.choices)}]));return {requiredIds:Object.keys(questions),questions};}
+ if(settings.mode==='mission'&&['space','bio'].includes(settings.scenario)){const ids=settings.scenario==='space'?['moments','indicator','energy','variables','density','graph','equation','microscope']:['microscope','indicator','moments','equation','osmosis','graph','separation','energy'];const questions=Object.fromEntries(settings.pool.map((q,i)=>[ids[i],{...q,choices:shuffled(q.choices)}]));return {requiredIds:Object.keys(questions),questions};}
  const questions=Object.fromEntries(shuffled(settings.pool).slice(0,stationOrder.length).map((q,i)=>[stationOrder[i],{...q,choices:shuffled(q.choices)}]));
  return {requiredIds:Object.keys(questions),questions};
 }
