@@ -64,3 +64,6 @@ Independent 34 × 26 m industrial environment with turbine hall, transformer bay
 
 ## Escape Lab 2.0 — The Forgotten Tomb
 Independent 28 × 28 m fictional archaeological layout with a pillared access passage, six galleries, stone seals, replica artefacts and original abstract inscriptions. Ten original Blender model types; run `Generate Tomb Assets.bat` and commit `public/models/tomb`. Verify with `python blender/verify_assets.py --tomb`. Science questions are assigned to named stations. Models are decorative; bespoke physical tomb puzzles and full browser testing are still outstanding.
+
+## Escape Lab 2.0 — Characters and first-person hands
+Articulated teammate avatars with separate shoulders, elbows, hips and knees, interpolated facing and speed-based stride, player-colour badges, and camera-facing name labels. First-person hands render in a separate depth-cleared pass, use actual movement and interaction cues, and can be hidden in Game settings; reduced motion suppresses bobbing and reaching. Run `Generate Character Assets.bat` and commit `public/models/characters` (seven original modular assets). Verify with `python blender/verify_assets.py --characters`. Procedural meshes are retained as fallbacks. These are jointed rigid models, not skinned or motion-captured humans. Browser/device testing remains outstanding.
