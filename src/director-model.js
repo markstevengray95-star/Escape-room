@@ -1,31 +1,39 @@
 import {guidanceIntervals} from './difficulty.js';
-import {crisisDefinition} from './crisis.js';
 export const directorNames={lab:'Facility Control',space:'Flight Control',bio:'Research Control',chem:'Safety Control',blackout:'Grid Control',tomb:'Survey Control'};
+const dialogue={
+ lab:{intro:"Hi, team. We've got a problem with the containment system. Start by finding the research log, then work through the experiments. I'll keep an eye on things from here.",warnings:["You're in. Let's find that research log.","Quick update. Containment is getting weaker. Keep working through those investigations.","We're losing containment. Focus on the remaining experiments.","We're running out of time. Get those safety systems back online.","One minute to go. Stay focused on the exit."],win:"You did it! Containment is stable again, and the facility is secure. That was excellent work.",fail:"That's the end of this simulation. The facility is isolated. You made progress, so let's review what still needs doing."},
+ space:{intro:"Flight control here. We're having trouble with life support and navigation. Find the flight log and work through the checks. I'll talk you through it.",warnings:["Let's get those flight checks started.","A quick update from flight control. Our reserves are dropping. Keep going with the diagnostics.","The reserves are getting low. Prioritise the checks you haven't finished.","We're close to the deadline now. Get the launch systems ready.","One minute left. You've got this."],win:"That's it! Navigation is back online, and you're cleared to leave. Brilliant work, crew.",fail:"We've reached the end of the simulation. The ship is in emergency shutdown. Let's go through the checks you completed."},
+ bio:{intro:"Hello, research team. A specimen has triggered our containment alarm. We need your help working out what happened. Start with the research records.",warnings:["Let's start with the research records.","I'm seeing a drop in containment control. Keep working through the specimen checks.","The containment system is struggling. Finish those diagnostics.","We're nearly out of time. Focus on the release checks.","One minute left. Check what still needs doing."],win:"That's wonderful work. You've identified the specimen and secured the facility.",fail:"Time's up on this simulation. The research facility has been isolated. Let's look at your findings."},
+ chem:{intro:"Safety control here. The reaction monitor isn't behaving as expected. We need your science skills to work out why. Start with the safety record.",warnings:["Start with the safety record.","Our safety readings are dropping. Keep working through the analyses.","The safety system is struggling now. Focus on the unfinished checks.","We're close to the deadline. Head towards the final safety checks.","One minute remaining. Concentrate on the last objectives."],win:"Nice work! Those checks have restored the safety system. You're cleared to leave.",fail:"That's the end of the simulation. The safety system has shut down. Let's review your results."},
+ blackout:{intro:"Hi, team. We've lost power across our simulated city. Let's get it back. Find the maintenance log, then work through the electrical and energy checks.",warnings:["Find the maintenance log to get started.","Quick update. The reserve power is dropping. Keep going with the checks.","Reserve power is getting low. Let's focus on the remaining diagnostics.","We're nearly at the deadline. Finish the grid checks and prepare the restart.","One minute left. Make those final checks count."],win:"And we're back online! You've restored power to the simulated city. Great work.",fail:"We've reached the end of the simulation. The grid is offline. Let's review what you've achieved."},
+ tomb:{intro:"Survey control here. Our readings suggest the chamber is becoming unstable. Take a look at the survey record and use your science skills to work out the mechanisms.",warnings:["Start with the survey record.","The chamber readings are getting worse. Keep investigating those mechanisms.","We're running low on time. Focus on the remaining scientific checks.","The exit seal deadline is close. Find the final clues.","One minute left. Let's get that final seal open."],win:"You've done it! The seal is open, and the survey team can leave. Fantastic work.",fail:"That's the end of our simulation. The chamber has sealed. Let's go over the clues you found."}
+};
 export function createDirectorModel(){
- let last=null,lastProgressAt=0,lastHintAt=-Infinity,thresholds=new Set(),lastEventAt=-Infinity;
+ let last=null,lastProgressAt=0,lastHintAt=-Infinity,thresholds=new Set(),lastEventAt=-Infinity,encouragement=0;
  const event=(kind,text,priority=1)=>({kind,text,priority});
- function reset(){last=null;lastProgressAt=0;lastHintAt=-Infinity;thresholds=new Set();lastEventAt=-Infinity;}
+ function reset(){last=null;lastProgressAt=0;lastHintAt=-Infinity;thresholds=new Set();lastEventAt=-Infinity;encouragement=0;}
  function tick({scenario='lab',crisis,state={},bonus=null,remaining=1800,now=0,active=true,objective=''}={}){
   if(!active||!crisis?.enabled)return null;
+  const lines=dialogue[scenario]||dialogue.lab;
   const snapshot={stage:crisis.stage,progress:crisis.progress,restored:crisis.restored||0,paused:crisis.paused,bonus:bonus?.id||null,power:!!state.power,door:!!state.door,ready:(crisis.systems||[]).filter(x=>x.ready&&!x.online).length,remaining};
   const old=last;last=snapshot;
-  if(!old){lastProgressAt=now;if(crisis.paused)return null;for(const n of [60,30,10])if(remaining<=n)thresholds.add(n);lastEventAt=now;return event('briefing',crisisDefinition(scenario).brief+' '+crisis.message,2);}
-  if(snapshot.paused){if(!old.paused)return event('pause','Mission paused by your teacher.',3);return null;}
-  if(old.paused){lastProgressAt=now;lastEventAt=now;return event('resume','Mission resumed. Continue your investigations.',2);}
+  if(!old){lastProgressAt=now;if(crisis.paused)return null;for(const n of [60,30,10])if(remaining<=n)thresholds.add(n);lastEventAt=now;return event('briefing',lines.intro,2);}
+  if(snapshot.paused){if(!old.paused)return event('pause','Your teacher has paused the mission. We’ll pick up where we left off.',3);return null;}
+  if(old.paused){lastProgressAt=now;lastEventAt=now;return event('resume','Right, we’re back. Carry on from where you left off.',2);}
   if(snapshot.progress>old.progress||snapshot.restored>old.restored)lastProgressAt=now;
   // An extension may re-arm future thresholds, but never replays crossed thresholds on every poll.
   if(remaining>old.remaining)for(const n of [60,30,10])if(remaining>n)thresholds.delete(n);
   const crossed=[10,30,60].find(n=>remaining>0&&remaining<=n&&old.remaining>n&&!thresholds.has(n));
-  if(crossed){for(const n of [60,30,10])if(remaining<=n)thresholds.add(n);lastEventAt=now;return event('countdown',crossed+' seconds remaining. '+(crossed===10?'Finalise your mission.':'Complete the remaining objectives.'),4);}
-  if(snapshot.stage>old.stage){lastEventAt=now;return event('warning',crisis.message,3);}
-  if(snapshot.bonus&&snapshot.bonus!==old.bonus){lastEventAt=now;return event('bonus','Optional emergency challenge available. Open the radio challenge to earn a reward.',2);}
-  if(snapshot.restored>old.restored){lastEventAt=now;return event('repair',snapshot.restored===4?'All four systems online. Enter the final escape code.':snapshot.restored+' of four systems restored. Excellent work, team.',2);}
-  if(snapshot.power&&!old.power){lastEventAt=now;return event('repair','Emergency supply restored. Continue to the control chamber.',2);}
-  if(snapshot.ready>old.ready&&now-lastEventAt>8000){lastEventAt=now;return event('ready','A subsystem is ready to activate. Check the final console.',1);}
-  if(snapshot.progress>old.progress&&now-lastEventAt>25000){lastEventAt=now;return event('progress','Investigation confirmed. System recovery is progressing.',1);}
+  if(crossed){for(const n of [60,30,10])if(remaining<=n)thresholds.add(n);lastEventAt=now;return event('countdown',crossed===10?'Ten seconds left.':crossed===30?'Thirty seconds left. Keep focused.':'One minute left. Finish those last checks.',4);}
+  if(snapshot.stage>old.stage){lastEventAt=now;return event('warning',lines.warnings[snapshot.stage]||crisis.message,3);}
+  if(snapshot.bonus&&snapshot.bonus!==old.bonus){lastEventAt=now;return event('bonus','I’ve got an extra challenge for you. If you have time, check the radio. It could earn you a little more time.',2);}
+  if(snapshot.restored>old.restored){lastEventAt=now;return event('repair',snapshot.restored===4?'Brilliant, all four systems are back online! Just the final escape code to go.':'Nice work. That’s '+['zero','one','two','three','four'][Math.min(4,snapshot.restored)]+' of the four systems restored.',2);}
+  if(snapshot.power&&!old.power){lastEventAt=now;return event('repair','There we go. The power’s back on! You can move on to the control chamber.',2);}
+  if(snapshot.ready>old.ready&&now-lastEventAt>8000){lastEventAt=now;return event('ready','Looks like one of the systems is ready. Have a look at the final console when you get there.',1);}
+  if(snapshot.progress>old.progress&&now-lastEventAt>25000){lastEventAt=now;return event('progress',['Good work. That’s another investigation complete.','Nice, that’s another piece of the puzzle.','You’re making good progress. Keep it up.'][encouragement++%3],1);}
   const guidance=guidanceIntervals[crisis.guidance]??guidanceIntervals.standard;
-  if(now-lastProgressAt>=guidance&&now-lastHintAt>=guidance&&now-lastEventAt>20000&&remaining>60&&objective){lastHintAt=lastEventAt=now;return event('guidance','Mission guidance. '+objective+'.',1);}
+  if(now-lastProgressAt>=guidance&&now-lastHintAt>=guidance&&now-lastEventAt>20000&&remaining>60&&objective){lastHintAt=lastEventAt=now;return event('guidance','If you’re not sure what to do next, here’s a hint. '+objective.replace(/[.!?]+$/,'')+'.',1);}
   return null;
  }
- return {tick,reset,finish(scenario,crisis,win){return event('ending',crisis?.message||(win?crisisDefinition(scenario).success:crisisDefinition(scenario).failure),5);}};
+ return {tick,reset,finish(scenario,crisis,win){const lines=dialogue[scenario]||dialogue.lab;return event('ending',win?lines.win:crisis?.outcome==='stopped'?'Your teacher has ended the mission. Take a look at what you’ve achieved.':lines.fail,5);}};
 }
