@@ -1,8 +1,10 @@
+import {openBench} from './experiment-bench.js';
 import {stations} from './puzzles.js';
 const select=(id,label,options)=>'<label for="'+id+'">'+label+'</label><select id="'+id+'">'+options.map(([v,l])=>'<option value="'+v+'">'+l+'</option>').join('')+'</select>';
 const num=(id,label,value='')=>'<label for="'+id+'">'+label+'</label><input id="'+id+'" type="number" step="any" required value="'+value+'">';
 const button=(id,text)=>'<button type="button" id="'+id+'">'+text+'</button>';
 export function openInvestigation(id,variant,{show,hide,apply,panel}){
+ if(openBench(id,variant,{show,hide,apply,panel}))return;
  const get=id=>panel.querySelector('#'+id),val=id=>get(id).value,n=id=>Number(val(id));
  let tested=false,mass=false,volume=false,body='',read=()=>({});
  const parts=[['','Select component'],['cell','Cell'],['switch','Switch'],['resistor','Resistor']];
