@@ -1,8 +1,5 @@
-Binaries/
-DerivedDataCache/
-Intermediate/
-Saved/
-.vs/
-*.sln
-*.VC.db
-*.opensdf
+node_modules/
+dist/
+.vercel/
+.env*
+!.env.example
