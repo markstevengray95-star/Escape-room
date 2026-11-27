@@ -11,3 +11,15 @@ jobs:
       - run: npm install --no-audit --no-fund
       - run: npm test
       - run: npm run build
+      - name: Verify all exported model packs
+        run: |
+          python blender/verify_assets.py
+          for pack in architecture space bio chem blackout tomb characters; do
+            python blender/verify_assets.py --"$pack"
+          done
+      - name: Install browser test runner
+        run: |
+          npm install --no-save --no-audit --no-fund playwright@1.51.1
+          npx playwright install --with-deps chromium
+      - name: Browser and multiplayer HTTP smoke test
+        run: node scripts/browser-smoke.mjs
