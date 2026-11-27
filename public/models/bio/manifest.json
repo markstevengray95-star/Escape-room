@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "assets": {
+    "culture-cabinet": {
+      "file": "culture-cabinet.glb",
+      "bytes": 454488,
+      "sha256": "9ee1c8a8b8f8730a2f42f3123692bfec5bac8519032c4ef3bb48455edf572436"
+    },
+    "grow-rack": {
+      "file": "grow-rack.glb",
+      "bytes": 780072,
+      "sha256": "d95d17f09e51fd1992d5e353c50618e3ece50f50622cc137d9ed391195bfc34b"
+    },
+    "incubator": {
+      "file": "incubator.glb",
+      "bytes": 206572,
+      "sha256": "8e55d545cbf65af3f3cbe6d4dd9dc03cfacc579db4daa8c220fa933a375c7327"
+    },
+    "centrifuge": {
+      "file": "centrifuge.glb",
+      "bytes": 409500,
+      "sha256": "5a763066a101016185a0af9ea9e3c11c745ea40965e18baa0d3c5ed74010b46b"
+    },
+    "diagnostic-bench": {
+      "file": "diagnostic-bench.glb",
+      "bytes": 352588,
+      "sha256": "f408ad3d7fd8a5259d47261be21a48c82fc6f86d93fa78fc19619d5e71105b13"
+    },
+    "cold-storage": {
+      "file": "cold-storage.glb",
+      "bytes": 182352,
+      "sha256": "fc828af504f3f306e11886a4b62587eaeb78356bd16a7ab0147b93f416ab8376"
+    },
+    "specimen-pod": {
+      "file": "specimen-pod.glb",
+      "bytes": 174672,
+      "sha256": "5c7f8a9bc931901bf22e2eaf8ddb79cebc1f54fe299e43d24a532e9c32a674aa"
+    },
+    "biosafety-console": {
+      "file": "biosafety-console.glb",
+      "bytes": 363580,
+      "sha256": "b5c649031b76f411c8bc662c5c220467729a7eabedae6bea3074fd2394fdc2e9"
+    },
+    "containment-door": {
+      "file": "containment-door.glb",
+      "bytes": 195444,
+      "sha256": "8312dd4c968b6360344f83a37e45562caca53ec68ab8acb18f48e948253bf120"
+    }
+  }
+}
