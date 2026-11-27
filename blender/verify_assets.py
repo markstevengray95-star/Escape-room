@@ -15,6 +15,9 @@ def main():
     if "--space" in sys.argv:
         ROOT=ROOT.parent/"space"
         EXPECTED={"cockpit","navigation","cargo-rack","life-support","hydroponics","reactor","solar-rack","airlock","viewport"}
+    if "--bio" in sys.argv:
+        ROOT=ROOT.parent/"bio"
+        EXPECTED={"culture-cabinet","grow-rack","incubator","centrifuge","diagnostic-bench","cold-storage","specimen-pod","biosafety-console","containment-door"}
     manifest=json.loads((ROOT/"manifest.json").read_text(encoding="utf-8"))
     assert manifest["version"]==1, "Unexpected manifest version"
     assert set(manifest["assets"])==EXPECTED, "Missing or unexpected models"
