@@ -1,3 +1,4 @@
+import {powerLayout} from './power-layout.js';
 import {chemLayout} from './chem-layout.js';
 import {bioLayout} from './bio-layout.js';
 import {spaceLayout} from './space-layout.js';
@@ -17,6 +18,7 @@ export function scenarioLayout(id='lab'){
  if(id==='space')return spaceLayout(theme,stations);
  if(id==='bio')return bioLayout(theme,stations);
  if(id==='chem')return chemLayout(theme,stations);
+ if(id==='blackout')return powerLayout(theme,stations);
  const sx=theme.sx,sz=theme.sz,mx=theme.mirror;const point=(x,z)=>[x*sx*mx,z*sz];
  const box=b=>({...b,x:b.x*sx*mx,z:b.z*sz,w:b.w*sx,d:b.d*sz});
  const rs=rooms.map((r,i)=>({...r,name:theme.names[i],x:r.x*sx*mx,z:r.z*sz,color:id==='lab'?r.color:newColor(theme.wall,i)}));
