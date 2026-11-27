@@ -1,3 +1,4 @@
+import {repairEnabled,repairTransition,allRepairsOnline} from './repairs.js';
 import {explorationAction,needed,items} from './exploration.js';
 import {required} from './curriculum.js';
 import {stations,validateStation} from './puzzles.js';
@@ -7,6 +8,7 @@ export function transition(s,action,value,variant={current:3,suffix:'14',archive
  const reject=message=>({state:s,ok:false,message});
  const accept=(patch,message)=>({state:{...s,...patch},ok:true,message});
  if(s.escaped) return reject('Already escaped.');
+ if(action==='stabilise')return repairTransition(s,variant,value);
  if(variant.exploration){const extra=explorationAction(s,action);if(extra)return extra;const missing=needed(s,action);if(missing.length)return reject('Find '+missing.map(k=>items[k].name).join(', ')+' first.');}
  if(stations.some(p=>p.id===action)){if(['graph','variables'].includes(action)&&!s.archiveGate)return reject('Unlock the analysis lab first.');if(action==='spectrum'&&!s.door)return reject('Unlock the control room first.');if(s.solved.includes(action))return reject('Investigation already completed.');if(!required(variant).includes(action))return reject('This station is not assigned.');const question=variant.questions?.[action];const r=question?(typeof value?.choice==='string'&&value.choice===question.correct?{ok:true,message:question.explanation}:{ok:false,message:'Not quite. Reconsider the evidence and try again.'}):validateStation(action,value,variant);return r.ok?accept({solved:[...s.solved,action]},r.message):reject(r.message);}
  switch(action){
@@ -16,7 +18,7 @@ export function transition(s,action,value,variant={current:3,suffix:'14',archive
  case 'door':if(s.door)return reject('Door already unlocked.');if(!s.note||!s.power)return reject('Find the note and restore power first.');return String(value).trim()===String(variant.current)+variant.suffix?accept({door:true},'Security door unlocked.'):reject('Use the current followed by the two digits in your note.');
  case 'archiveGate':if(s.archiveGate)return reject('Analysis lab already open.');if(!(variant.gateRequires??['microscope','indicator','equation'].filter(id=>required(variant).includes(id))).every(id=>s.solved.includes(id)))return reject('Complete the assigned entry investigations first.');return accept({archiveGate:true},'Analysis laboratory unlocked.');
  case 'archive':if(s.archive)return reject('Archive already collected.');return s.archiveGate&&['graph','variables'].filter(id=>required(variant).includes(id)).every(id=>s.solved.includes(id))?accept({archive:true},'Archive digit recovered. Check your notebook.'):reject('Complete the assigned analysis investigations first.');
- case 'exit':if(!s.door||!s.archiveGate||!s.archive||!required(variant).every(id=>s.solved.includes(id)))return reject('Complete every investigation and recover the archive digit.');return String(value).trim()===String(variant.current)+variant.suffix+variant.archiveDigit?accept({escaped:true},'Laboratory escaped!'):reject('Combine current, note suffix and archive digit in that order.');
+ case 'exit':if(repairEnabled(variant)&&!allRepairsOnline(s,variant))return reject('Restore all four simulated systems at the final console.');if(!s.door||!s.archiveGate||!s.archive||!required(variant).every(id=>s.solved.includes(id)))return reject('Complete every investigation and recover the archive digit.');return String(value).trim()===String(variant.current)+variant.suffix+variant.archiveDigit?accept({escaped:true},'Laboratory escaped!'):reject('Combine current, note suffix and archive digit in that order.');
  default:return reject('Unknown action.');
  }
 }
