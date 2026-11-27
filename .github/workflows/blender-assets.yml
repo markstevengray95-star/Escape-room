@@ -1,0 +1,36 @@
+name: Blender asset verification
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'blender/generate_lab.py'
+      - 'blender/verify_assets.py'
+      - '.github/workflows/blender-assets.yml'
+  pull_request:
+    paths:
+      - 'blender/generate_lab.py'
+      - 'blender/verify_assets.py'
+      - '.github/workflows/blender-assets.yml'
+permissions:
+  contents: read
+jobs:
+  generate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Blender
+        run: sudo apt-get update && sudo apt-get install -y blender
+      - name: Generate models
+        run: blender --background --factory-startup --python-exit-code 1 --python blender/generate_lab.py
+      - name: Verify GLB exports
+        run: python3 blender/verify_assets.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: escape-lab-blender-models
+          path: public/models/lab/
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: npm test && npm run build
