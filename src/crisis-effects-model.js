@@ -14,7 +14,7 @@ export function effectState(id,crisis,preferences={}){
  const reduced=preferences.reducedMotion===true,quality=preferences.quality||'standard';
  const stage=clamp(Number(crisis?.stage)||0,0,4),integrity=clamp(Number(crisis?.integrity??100),0,100);
  // Successful investigations visibly reduce the environmental stress.
- const intensity=enabled?clamp(stage/4*.68+(100-integrity)/100*.32,0,1):0;
+ const intensity=enabled?clamp((stage/4*.68+(100-integrity)/100*.32)*clamp(Number(crisis.intensity??1),0,1),0,1):0;
  const lightStress=enabled?(reduced?intensity*.45:intensity):0;
  const capacity=quality==='high'?144:quality==='low'?0:72;
  return {profile,intensity,lightStress,particles:enabled&&!reduced&&!crisis.paused?Math.round(capacity*intensity):0,paused:!!crisis?.paused};
