@@ -18,3 +18,6 @@ Run npm install, npm test, npm run dev for local testing. For LAN/production run
 
 ## Phase 3 interactive science stations
 Build the series circuit using drag-and-drop or select controls, focus a simulated microscope, test an unknown with indicator, balance a lever, measure mass and displacement, balance a reaction and interpret a decay graph. Six new stations appear across the two areas; their completed evidence is shared per team. Exit now requires all six investigations as well as the security code. These are lightweight instrument simulations in overlays, not full physics simulations. The solo client includes validation logic; multiplayer validates submitted evidence on the server, but shared puzzle definitions remain discoverable in client source. Browser and classroom testing are still required.
+
+## Phase 4: six-room facility
+30-minute mission, shared corridor, subject rooms, stores, locked analysis and control rooms, 12 science tasks (including circuit), 16 evidence milestones. Collect storage note, restore power, unlock analysis with biology/chemistry evidence, recover archive digit, complete every investigation, and enter the final code in the control room. Shared geometry drives client/server collisions. Original procedural blockout and simplified instrument panels; actual browser rendering and classroom load still need testing.
