@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "assets": {
+    "cockpit": {
+      "file": "cockpit.glb",
+      "bytes": 376096,
+      "sha256": "d7831851d8bf894abc51de6ab64bd4b19c903b1c2d5eaf904bd428db01043300"
+    },
+    "navigation": {
+      "file": "navigation.glb",
+      "bytes": 376096,
+      "sha256": "f2f33aced62d188973b1c0327a5b0a0b14461fb7598e539c7a77d97e397dead4"
+    },
+    "cargo-rack": {
+      "file": "cargo-rack.glb",
+      "bytes": 178092,
+      "sha256": "751df7384bff634c39aac861ac034ac53826c9ffcf45bd6ff37c1a0630de7253"
+    },
+    "life-support": {
+      "file": "life-support.glb",
+      "bytes": 160376,
+      "sha256": "a85df7317c13ca40d447d735429a0f1ac62c66c6afa9617e058740bde56dadea"
+    },
+    "hydroponics": {
+      "file": "hydroponics.glb",
+      "bytes": 163644,
+      "sha256": "9b93d45d817466b14ed1902f1c581ec167de091dec2c5789e2d7e65ddc959326"
+    },
+    "reactor": {
+      "file": "reactor.glb",
+      "bytes": 149972,
+      "sha256": "430ec70e1c9f072f5fdd918fa9540dad515850e5b78720961106d85e4edc3ba8"
+    },
+    "solar-rack": {
+      "file": "solar-rack.glb",
+      "bytes": 232328,
+      "sha256": "4e77a0360ebb42df3f7a725fe6a8c7dd7d028ef2c395072834a088823afe330f"
+    },
+    "airlock": {
+      "file": "airlock.glb",
+      "bytes": 206968,
+      "sha256": "7523f8c271cee52030b251f6f00ce55039ecea0ff8d99c19e016836c8f191a21"
+    },
+    "viewport": {
+      "file": "viewport.glb",
+      "bytes": 234128,
+      "sha256": "7b56d018c2794fe4d377aa64ef19202bbbed21f244234a141f37474d472d15d2"
+    }
+  }
+}
