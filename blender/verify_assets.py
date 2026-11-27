@@ -1,4 +1,5 @@
 """Verify exported files without requiring Blender."""
+import sys
 import json
 import struct
 import hashlib
@@ -7,6 +8,10 @@ ROOT=Path(__file__).resolve().parents[1]/"public"/"models"/"lab"
 EXPECTED={"microscope","indicator","osmosis","separation","moments","density","equation","graph","variables","energy","spectrum","bench"}
 
 def main():
+    global ROOT, EXPECTED
+    if "--architecture" in sys.argv:
+        ROOT=ROOT.parent/"lab-architecture"
+        EXPECTED={"security-door","storage-cabinet","fume-hood","wall-panel","vent-duct","ceiling-light","noticeboard","keypad"}
     manifest=json.loads((ROOT/"manifest.json").read_text(encoding="utf-8"))
     assert manifest["version"]==1, "Unexpected manifest version"
     assert set(manifest["assets"])==EXPECTED, "Missing or unexpected models"
@@ -24,5 +29,5 @@ def main():
         assert not any("uri" in b for b in doc.get("buffers",[])), name+" external buffers"
         assert not any("uri" in i for i in doc.get("images",[])), name+" external images"
         print(name, len(data), "bytes;",len(doc["meshes"]),"meshes")
-    print("PASS: all 12 Blender models verified")
+    print("PASS: all",len(EXPECTED),"Blender models verified")
 if __name__=="__main__": main()
