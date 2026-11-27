@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "assets": {
+    "reagent-cabinet": {
+      "file": "reagent-cabinet.glb",
+      "bytes": 286988,
+      "sha256": "5b041028db251b090ba2ca7861b9caf83ad97721dcaf1e1ba50568ce6daf876a"
+    },
+    "electrolysis-bench": {
+      "file": "electrolysis-bench.glb",
+      "bytes": 338232,
+      "sha256": "7cd2a4c518cf36e15bc357edbc52eac6fd331668c3cf69a83d2d951ee27c4cf4"
+    },
+    "reaction-rig": {
+      "file": "reaction-rig.glb",
+      "bytes": 310132,
+      "sha256": "10a808c5463927fedee7c9894aee9bc8a882d9e9f2788cb41d98c08457c1bcd7"
+    },
+    "calorimeter": {
+      "file": "calorimeter.glb",
+      "bytes": 312184,
+      "sha256": "a85d0070cb04c8eb146fededcf60f799f35146118c93b8222aeeb973627b79ae"
+    },
+    "gas-test-rig": {
+      "file": "gas-test-rig.glb",
+      "bytes": 332504,
+      "sha256": "091aa4f828d6fc0265a6fbfdf2e89ab149549d1431a2ec0be3b3060098937bf3"
+    },
+    "chromatography-bench": {
+      "file": "chromatography-bench.glb",
+      "bytes": 445960,
+      "sha256": "bda926251fee45a6a24b1187495e4c839550b3d203690c7f9d8bee13df7f72d2"
+    },
+    "material-analyser": {
+      "file": "material-analyser.glb",
+      "bytes": 305720,
+      "sha256": "399d5dd0982320461deefcc3a8d04cfab622c75f25b27e4e97a06faa601e92ac"
+    },
+    "safety-console": {
+      "file": "safety-console.glb",
+      "bytes": 406636,
+      "sha256": "96505580de1c82c84b04f5cd46092829cecda346d70c506009dc0a2615a30222"
+    },
+    "safety-interlock": {
+      "file": "safety-interlock.glb",
+      "bytes": 210084,
+      "sha256": "58965c24c1b63f94fba4eddb5550344188810e22b2a3d7e1728ac10d9d56eb20"
+    }
+  }
+}
