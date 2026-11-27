@@ -1,0 +1,6 @@
+export const subjects={B:'Biology',C:'Chemistry',P:'Physics',W:'Working scientifically'};
+export const topics={cells:'Cell biology',organisation:'Organisation',infection:'Infection and response',bioenergetics:'Bioenergetics',homeostasis:'Homeostasis and response',inheritance:'Inheritance, variation and evolution',ecology:'Ecology',atomic:'Atomic structure',bonding:'Bonding and structure',quantitative:'Quantitative chemistry',chemical:'Chemical changes',energy:'Energy',rates:'Rates and equilibrium',organic:'Organic chemistry',analysis:'Chemical analysis',atmosphere:'Atmosphere',resources:'Using resources',electricity:'Electricity',particle:'Particle model',forces:'Forces',waves:'Waves',magnetism:'Magnetism and electromagnetism',space:'Space physics (Triple)',practical:'Working scientifically'};
+export const courses={KS3:'KS3 Science',F:'AQA GCSE Combined – Foundation',H:'AQA GCSE Combined – Higher',FT:'AQA GCSE Triple – Foundation',HT:'AQA GCSE Triple – Higher'};
+export const stationOrder=['microscope','indicator','equation','graph','variables','spectrum','osmosis','separation','moments','density','energy'];
+export const required=(variant)=>variant.requiredIds||stationOrder;
+export const totalFor=variant=>required(variant).length+5;

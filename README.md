@@ -21,3 +21,7 @@ Build the series circuit using drag-and-drop or select controls, focus a simulat
 
 ## Phase 4: six-room facility
 30-minute mission, shared corridor, subject rooms, stores, locked analysis and control rooms, 12 science tasks (including circuit), 16 evidence milestones. Collect storage note, restore power, unlock analysis with biology/chemistry evidence, recover archive digit, complete every investigation, and enter the final code in the control room. Shared geometry drives client/server collisions. Original procedural blockout and simplified instrument panels; actual browser rendering and classroom load still need testing.
+
+## Phase 5: curriculum and custom question modes
+73 original starter questions, grouped by KS3 / AQA GCSE Combined and separate science Foundation/Higher levels, subject and topic. Teacher-hosted curriculum mode substitutes selected question terminals for the practical investigations. Up to 11 unique questions per team; narrow pools produce fewer active terminals with gates adjusted accordingly. Classic mode preserves all 12 original tasks. Custom mode accepts one question per line: question | correct | distractor 1 | distractor 2 | distractor 3 | explanation. The original circuit/security-code sequence remains in all modes. The curriculum bank is a starter sample, not exhaustive specification coverage. Keys are server-side for curriculum/custom modes; solo remains classic. No live browser testing yet.
+AQA topic reference: https://www.aqa.org.uk/subjects/science/gcse/science-8464/specification/specification-at-a-glance
