@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {visualThemes,visualTheme,graphicsDetail,lightLevel} from '../src/atmosphere-model.js';
+test('every scene has a valid lighting and material profile',()=>{assert.equal(Object.keys(visualThemes).length,6);for(const [id,t] of Object.entries(visualThemes)){assert.ok(t.far>t.near);assert.ok(t.exposure>0);assert.ok(t.emergency>0);assert.ok(lightLevel(id,true)>lightLevel(id,false));assert.ok(t.floor&&t.wall&&t.ceiling);}assert.equal(visualTheme('invalid'),visualThemes.lab);});
+test('low graphics disables expensive surface effects',()=>{assert.equal(graphicsDetail('low').bump,false);assert.equal(graphicsDetail('low').reflection,false);assert.equal(graphicsDetail('high').reflection,true);});
