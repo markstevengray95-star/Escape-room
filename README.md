@@ -76,3 +76,6 @@ CI verifies every exported model pack, runs Node tests and the Vite build, then 
 
 ## Phase 13 — Dynamic fictional crisis engine
 Six distinct crisis briefings, five time-based danger stages, an integrity meter that improves with completed investigations, and distinct success/failure messages. The same deterministic state is used by solo and the classroom server. Pause freezes the clock, extensions recalculate danger, and teachers can opt out when creating a room. Integrity is narrative feedback, never an extra failure condition. No flashing or blocked navigation. Environmental effects, repair animations, audio director and random tasks remain later phases.
+
+## Phase 14 — Environmental crisis effects
+Each scene has a distinct visual effect profile: laboratory steam, spacecraft sparks, biological mist, chemistry vapour, industrial sparks and tomb dust. Smooth emergency light tint, limited dimming and bounded fog respond to crisis stage and team integrity. Cosmetic edge scuffs/debris never affect collision or investigation access. Low graphics disables particles, reduced motion disables moving particles, and the environmental-effects setting disables all crisis visuals. Warning tones respect existing audio/volume settings. No flashing, camera shake, new assets or additional Blender generation. Browser rendering remains to be verified.
