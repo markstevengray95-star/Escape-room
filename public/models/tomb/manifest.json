@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "assets": {
+    "artefact-plinth": {
+      "file": "artefact-plinth.glb",
+      "bytes": 173420,
+      "sha256": "9dc9ad69763a4139098cec368b94f1f744ae3403c731fdea6307f683bd49e995"
+    },
+    "urn-cluster": {
+      "file": "urn-cluster.glb",
+      "bytes": 344224,
+      "sha256": "6e9d77147f6e5e972feebca1d88cbe05478fe916fb25535fe744dc4c44283c26"
+    },
+    "counterweight-rig": {
+      "file": "counterweight-rig.glb",
+      "bytes": 144248,
+      "sha256": "a10f410d4db89cf9f02607c48e788ba9b3d08c460b153e5cd8526664bb8ddcc2"
+    },
+    "stone-scale": {
+      "file": "stone-scale.glb",
+      "bytes": 86216,
+      "sha256": "11488613623e72bbe69f6e7e2aa940cb537f4745301d0fb4015f20cb2e1fda81"
+    },
+    "inscribed-stele": {
+      "file": "inscribed-stele.glb",
+      "bytes": 417644,
+      "sha256": "0431572fd74ee30129c361f94bf37278cc51af82354ea4db9bf082bbf4e58da1"
+    },
+    "mineral-display": {
+      "file": "mineral-display.glb",
+      "bytes": 84780,
+      "sha256": "fc24da4fc75fb2772099f597bc3fb57402acee08b23587835a393f530fc3c64f"
+    },
+    "survey-chest": {
+      "file": "survey-chest.glb",
+      "bytes": 67680,
+      "sha256": "1cd0eb0a4050aedf5290129b8fadcd7444d45ed4ce196cec7a9bfca4f959997a"
+    },
+    "dating-table": {
+      "file": "dating-table.glb",
+      "bytes": 132028,
+      "sha256": "a510cb7ca0a93ce9b1df0d35500cf04519c803daba87eacae8936dcd3b6f6cb4"
+    },
+    "pillar": {
+      "file": "pillar.glb",
+      "bytes": 85816,
+      "sha256": "0c36d9f5c7f9a2ec3dbe6046e9a494ba95c1bb78d931fb5254a80def7b3bd479"
+    },
+    "stone-seal": {
+      "file": "stone-seal.glb",
+      "bytes": 266420,
+      "sha256": "78c17b491a807f3b0ff3ac0c0da263abac6ab96681e98c8873f9775a48125b7c"
+    }
+  }
+}
