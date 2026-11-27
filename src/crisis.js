@@ -1,3 +1,4 @@
+import {repairEnabled,repairSystems} from './repairs.js';
 import {required} from './curriculum.js';
 // Fictional narrative stakes; never a second failure condition.
 export const crises={
@@ -18,6 +19,7 @@ export function crisisSnapshot({scenario='lab',remaining=1800,duration=1800,stat
  const stage=left<=60?4:fraction<=1/6?3:fraction<=1/3?2:fraction<=2/3?1:0;
  const labels=['Investigation','Warning','Critical','Emergency','Final countdown'];
  const outcome=state.escaped?'restored':phase==='ended'?(left===0?'failed':'stopped'):'active';
- const integrity=outcome==='restored'?100:outcome==='failed'?0:clamp(Math.round(100-82*(1-fraction)+45*progress),1,100);
- return {enabled:enabled!==false,name:d.name,system:d.system,stage,label:outcome==='restored'?'Stabilised':outcome==='failed'?'Mission failed':outcome==='stopped'?'Session ended':labels[stage],integrity,progress:Math.round(progress*100),outcome,paused:phase==='paused',message:outcome==='restored'?d.success:outcome==='failed'?d.failure:outcome==='stopped'?'Your teacher ended the simulation.':d.warnings[stage]};
+ const systems=repairEnabled(variant)?repairSystems(state,{...variant,scenario}):[];const restored=systems.filter(g=>g.online).length;
+ const integrity=outcome==='restored'?100:outcome==='failed'?0:clamp(Math.round(100-82*(1-fraction)+45*progress+restored*3),1,100);
+ return {systems,restored,enabled:enabled!==false,name:d.name,system:d.system,stage,label:outcome==='restored'?'Stabilised':outcome==='failed'?'Mission failed':outcome==='stopped'?'Session ended':labels[stage],integrity,progress:Math.round(progress*100),outcome,paused:phase==='paused',message:outcome==='restored'?d.success:outcome==='failed'?d.failure:outcome==='stopped'?'Your teacher ended the simulation.':d.warnings[stage]};
 }
