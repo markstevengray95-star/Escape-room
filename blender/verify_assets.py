@@ -18,6 +18,9 @@ def main():
     if "--bio" in sys.argv:
         ROOT=ROOT.parent/"bio"
         EXPECTED={"culture-cabinet","grow-rack","incubator","centrifuge","diagnostic-bench","cold-storage","specimen-pod","biosafety-console","containment-door"}
+    if "--chem" in sys.argv:
+        ROOT=ROOT.parent/"chem"
+        EXPECTED={"reagent-cabinet","electrolysis-bench","reaction-rig","calorimeter","gas-test-rig","chromatography-bench","material-analyser","safety-console","safety-interlock"}
     manifest=json.loads((ROOT/"manifest.json").read_text(encoding="utf-8"))
     assert manifest["version"]==1, "Unexpected manifest version"
     assert set(manifest["assets"])==EXPECTED, "Missing or unexpected models"
