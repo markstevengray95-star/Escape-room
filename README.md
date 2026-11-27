@@ -40,3 +40,6 @@ Original procedural equipment meshes (microscope, test tubes, lever, balance and
 
 ## Escape Lab 2.0 — Blender pipeline
 See [Blender setup](blender/README.md). Generate 12 original GLB equipment/furniture assets using the included Blender Python script. Laboratory Lockdown loads the local exports with automatic procedural fallbacks; other environments unchanged. Source .blend files are generated locally and excluded from Git. The Blender script and loader are implemented; the actual exports need to be generated using Blender before the enhanced visuals appear.
+
+## Escape Lab 2.0 — Laboratory architecture
+Run `Generate Laboratory Architecture.bat` to generate eight additional Blender assets (separate from the existing equipment pack): security door, keypad, storage cabinet, fume hood, wall panel, vent duct, ceiling luminaire and noticeboard. Commit `public/models/lab-architecture/`. Verify using `python blender/verify_assets.py --architecture`. The laboratory loads these assets when available, with procedural fallbacks. Geometry follows the existing collision layout; door model moves with its interactive gate and keypad shares the gate action. The note drawer remains independently animated. This is an architectural detail pass, not yet a new floor plan or free-form interaction system.
