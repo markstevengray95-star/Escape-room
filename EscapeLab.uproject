@@ -1,0 +1,13 @@
+{
+  "FileVersion": 3,
+  "EngineAssociation": "5.6",
+  "Category": "Games",
+  "Description": "Science escape room prototype",
+  "Modules": [
+    {
+      "Name": "EscapeLab",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
+  ]
+}
