@@ -9,7 +9,7 @@ try{
  const page=await browser.newPage({viewport:{width:1280,height:800}}),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.goto('http://127.0.0.1:4173');await page.locator('#solo-mode').waitFor();
  await page.locator('#home-settings').click();await page.locator('#quality').selectOption('low');await page.locator('#settings-done').click();
- await page.locator('#solo-mode').click();await page.locator('#start').click();await page.locator('#overlay').waitFor({state:'hidden'});
+ await page.locator('#solo-mode').click();assert.equal(await page.locator('[data-solo]').count(),6);await page.locator('#solo-practical').click();await page.locator('#start').click();await page.locator('#overlay').waitFor({state:'hidden'});
  await page.waitForFunction(()=>document.querySelector('#asset-status').textContent.startsWith('Blender models:'),{},{timeout:30000});
  await page.keyboard.down('w');await page.waitForTimeout(500);await page.keyboard.up('w');await page.waitForTimeout(300);
  assert.equal(await page.locator('#inventory-button').isVisible(),true);
