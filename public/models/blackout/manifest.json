@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "assets": {
+    "turbine": {
+      "file": "turbine.glb",
+      "bytes": 308428,
+      "sha256": "f55678b0b8ff853b3a32af092f0fa7ee33255c8bf4fc6f786d18316216e9ec3e"
+    },
+    "generator": {
+      "file": "generator.glb",
+      "bytes": 327704,
+      "sha256": "4bf44e44bc181b76b96c98a8899abc3294156d06595b918daf369cf43df17a44"
+    },
+    "transformer": {
+      "file": "transformer.glb",
+      "bytes": 387060,
+      "sha256": "3c216ec2ad4dbd0dde47963e6bd6bc820467363c18dfcb6040a49b891c247cc9"
+    },
+    "switchgear": {
+      "file": "switchgear.glb",
+      "bytes": 205208,
+      "sha256": "20c54673d4a7dd11f0dee36403cb567fa1e0e8ea6837615d34d8d18986d18eaf"
+    },
+    "control-desk": {
+      "file": "control-desk.glb",
+      "bytes": 372780,
+      "sha256": "2979c6f109169f5f9c2c2c794f1c73c309fe3fd2b539c6097dc82049022ad7b4"
+    },
+    "parts-rack": {
+      "file": "parts-rack.glb",
+      "bytes": 192972,
+      "sha256": "b219a326aa82dd43808d89893acf65cca659d2544334a17cb08bcb159611393d"
+    },
+    "maintenance-bench": {
+      "file": "maintenance-bench.glb",
+      "bytes": 304812,
+      "sha256": "7d348e34b8a2e38af36ec1a6ac1cbbd11b25a871ebf3903b02e52bde4b36cddd"
+    },
+    "pump-skid": {
+      "file": "pump-skid.glb",
+      "bytes": 106012,
+      "sha256": "106d7458e414cb9967d7d17ea94365c8957f678dc89e2cd7026e48a2bbe3d252"
+    },
+    "industrial-gate": {
+      "file": "industrial-gate.glb",
+      "bytes": 240428,
+      "sha256": "17f716d6a033fd636e2993fc29baf442a904d479d9e58ef3d593882886ec250a"
+    }
+  }
+}
