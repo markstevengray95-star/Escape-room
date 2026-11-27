@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "assets": {
+    "torso": {
+      "file": "torso.glb",
+      "bytes": 78392,
+      "sha256": "41f7f44b88c251e8ecf033051689d20e2ba057247c1fe2d354ada8b00565f996"
+    },
+    "helmet": {
+      "file": "helmet.glb",
+      "bytes": 70324,
+      "sha256": "62a25fb0ade1ce011c2dc7cc7d8fad1e00c460d37f2002edce36acc14a68a392"
+    },
+    "upper-arm": {
+      "file": "upper-arm.glb",
+      "bytes": 28324,
+      "sha256": "ebfee6885906b88c7ef92979ed2a31f51c2f0e7676e3d244eab5b263fd03dec0"
+    },
+    "forearm": {
+      "file": "forearm.glb",
+      "bytes": 28180,
+      "sha256": "ac90f76ac1740386907623b6070076850722d41c3d83dfcf458d3329f170ee8f"
+    },
+    "thigh": {
+      "file": "thigh.glb",
+      "bytes": 19476,
+      "sha256": "37e2ea946f0d97e9e013bcd59fa6f737bd46f65446fba0604cc2b074e2b6e804"
+    },
+    "boot-leg": {
+      "file": "boot-leg.glb",
+      "bytes": 50288,
+      "sha256": "10077febadeec8e4f0a64f4e7d4b378798413fa21f1c02955a391f45718b40f3"
+    },
+    "glove": {
+      "file": "glove.glb",
+      "bytes": 66608,
+      "sha256": "1b970704fe76d36251725ac312bf21dcab4f7d1cc4020896471ef07980a3b09e"
+    }
+  }
+}
