@@ -103,3 +103,6 @@ Solo practice now opens a six-room chooser. Each mission contains eight original
 
 ## Natural mission narration
 The director uses original conversational scripts for all six environments, varied encouragement, natural cadence and minimal pitch changes. Game settings allow voice selection, preview and speaking pace; automatic selection favours natural/neural/enhanced English voices, preferably UK English. Only local device voices are used by default; users can opt in to online browser/OS speech voices (provider may process the announcement text). No paid API integration or recordings. A bounded pending announcement avoids interrupting equal/lower-priority speech; urgent countdowns and ending transmissions take precedence. Voice quality depends on the installed voices and browser.
+
+### Voice delivery refinement
+Narration now uses sentence-level pacing, brief pauses, natural/calm/cinematic delivery styles, an automatically refreshed voice list and three preview samples with stop/status controls. Game audio is smoothly reduced during speech, and non-urgent updates wait while a puzzle panel is open. Urgent countdowns and final outcomes still take priority. No extra API or audio assets. Device voice quality remains dependent on the browser and OS; browser listening tests are needed.
