@@ -1,3 +1,4 @@
+import {intensityProfiles,difficultyStage,guidanceIntervals} from './difficulty.js';
 import {repairEnabled,repairSystems} from './repairs.js';
 import {required} from './curriculum.js';
 // Fictional narrative stakes; never a second failure condition.
@@ -11,15 +12,15 @@ export const crises={
 };
 export const crisisDefinition=id=>crises[id]||crises.lab;
 const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
-export function crisisSnapshot({scenario='lab',remaining=1800,duration=1800,state={},variant={},phase='playing',enabled=true}={}){
+export function crisisSnapshot({scenario='lab',remaining=1800,duration=1800,state={},variant={},phase='playing',enabled=true,intensity='normal',guidance='standard'}={}){
  const d=crisisDefinition(scenario),total=Number.isFinite(duration)&&duration>0?duration:1800,left=clamp(Number.isFinite(remaining)?remaining:total,0,total);
  const ids=required(variant),solved=new Set(Array.isArray(state.solved)?state.solved:[]),done=ids.filter(x=>solved.has(x)).length;
  const milestones=Number(!!state.note)+Number(!!state.power)+Number(!!state.door)+Number(!!state.archiveGate)+Number(!!state.archive);
  const progress=clamp((done+milestones)/(ids.length+5),0,1),fraction=left/total;
- const stage=left<=60?4:fraction<=1/6?3:fraction<=1/3?2:fraction<=2/3?1:0;
+ const profile=intensityProfiles[intensity]||intensityProfiles.normal;const stage=difficultyStage(fraction,left,intensity);
  const labels=['Investigation','Warning','Critical','Emergency','Final countdown'];
  const outcome=state.escaped?'restored':phase==='ended'?(left===0?'failed':'stopped'):'active';
  const systems=repairEnabled(variant)?repairSystems(state,{...variant,scenario}):[];const restored=systems.filter(g=>g.online).length;
- const integrity=outcome==='restored'?100:outcome==='failed'?0:clamp(Math.round(100-82*(1-fraction)+45*progress+restored*3+Math.min(2,(state.bonuses||[]).length)*5),1,100);
- return {systems,restored,enabled:enabled!==false,name:d.name,system:d.system,stage,label:outcome==='restored'?'Stabilised':outcome==='failed'?'Mission failed':outcome==='stopped'?'Session ended':labels[stage],integrity,progress:Math.round(progress*100),outcome,paused:phase==='paused',message:outcome==='restored'?d.success:outcome==='failed'?d.failure:outcome==='stopped'?'Your teacher ended the simulation.':d.warnings[stage]};
+ const integrity=outcome==='restored'?100:outcome==='failed'?0:clamp(Math.round(100-profile.decay*(1-fraction)+45*progress+restored*3+Math.min(2,(state.bonuses||[]).length)*5),1,100);
+ return {systems,restored,intensity:profile.scale,guidance:Object.hasOwn(guidanceIntervals,guidance)?guidance:'standard',enabled:enabled!==false,name:d.name,system:d.system,stage,label:outcome==='restored'?'Stabilised':outcome==='failed'?'Mission failed':outcome==='stopped'?'Session ended':labels[stage],integrity,progress:Math.round(progress*100),outcome,paused:phase==='paused',message:outcome==='restored'?d.success:outcome==='failed'?d.failure:outcome==='stopped'?'Your teacher ended the simulation.':d.warnings[stage]};
 }
