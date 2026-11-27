@@ -54,7 +54,7 @@ void AEscapeObject::Use(AEscapePlayer* P) {
  if (!IsValid(P) || P->bEscaped) return;
  switch(Kind) {
  case EEscapeObject::Drawer:
-  bOpen=!bOpen; TargetLocation=ClosedLocation+(bOpen?FVector(0,60,0):FVector::ZeroVector);
+  bOpen=!bOpen; TargetLocation=ClosedLocation+(bOpen?FVector(145,0,0):FVector::ZeroVector);
   P->Notify(bOpen?TEXT("Drawer opened. Inspect the note behind it."):TEXT("Drawer closed.")); break;
  case EEscapeObject::Clue:
   P->bHasClue=true; P->Notify(TEXT("Note collected: restore the breaker, then open the security door.")); Destroy(); break;
@@ -166,7 +166,7 @@ void AEscapeGameMode::BuildRoom() {
  // Benches and ceiling lights with no downloaded asset dependency.
  for (float X : {-300.f,100.f,550.f}) {
   if(auto* L=World->SpawnActor<APointLight>(FVector(X,0,265),FRotator::ZeroRotator)){
-   auto* C=L->PointLightComponent; C->SetMobility(EComponentMobility::Movable);
+   auto* C=Cast<UPointLightComponent>(L->GetLightComponent()); if(!C) continue; C->SetMobility(EComponentMobility::Movable);
    C->SetIntensity(6500); C->SetAttenuationRadius(850); C->SetLightColor(FLinearColor(0.78f,0.9f,1.f));
   }
  }
