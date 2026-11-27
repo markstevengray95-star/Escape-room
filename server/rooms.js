@@ -1,9 +1,11 @@
+import {stations} from '../src/puzzles.js';
 import {randomInt,randomBytes} from 'node:crypto';
 import {initialState,transition,move,DURATION} from '../src/rules.js';
 const token=()=>randomBytes(32).toString('hex');
 const spawn={x:-5,z:1.8,yaw:-Math.PI/2};
 const obstacles=[{x:0,z:-6,w:14,d:.2},{x:0,z:6,w:14,d:.2},{x:-7,z:0,w:.2,d:12},{x:7,z:0,w:.2,d:12},{x:2,z:-3.675,w:.22,d:4.65},{x:2,z:3.675,w:.22,d:4.65},{x:-4,z:-3.9,w:3.3,d:1.45},{x:-.4,z:4.4,w:3.1,d:1.35},{x:5.5,z:-3.8,w:1.6,d:1.45},{x:-4,z:-2.9,w:1.5,d:.78}];
-const locations={drawer:[-4,-2.45],note:[-4,-3.28],power:[-.4,4.2],door:[2,0],exit:[6.7,0]};
+obstacles.push(...stations.map(p=>({x:p.x,z:p.z,w:.55,d:.55})));
+const locations={...Object.fromEntries(stations.map(p=>[p.id,[p.x,p.z]])),drawer:[-4,-2.45],note:[-4,-3.28],power:[-.4,4.2],door:[2,0],exit:[6.7,0]};
 const err=(message,status=400)=>Object.assign(new Error(message),{status});
 export function createStore({clock=Date.now,maxRooms=100}={}){
  const rooms=new Map(),credentials=new Map();
