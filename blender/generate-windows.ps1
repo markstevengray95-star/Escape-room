@@ -1,3 +1,4 @@
+param([ValidateSet('generate_lab.py','generate_architecture.py')][string]$Script='generate_lab.py')
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 $exe = $env:BLENDER_EXE
@@ -16,5 +17,5 @@ if (-not $exe -or -not (Test-Path $exe)) {
   exit 1
 }
 Write-Host "Using Blender: $exe"
-& $exe --background --factory-startup --python-exit-code 1 --python (Join-Path $PSScriptRoot "generate_lab.py")
+& $exe --background --factory-startup --python-exit-code 1 --python (Join-Path $PSScriptRoot $Script)
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
