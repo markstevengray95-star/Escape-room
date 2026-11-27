@@ -27,6 +27,9 @@ def main():
     if "--tomb" in sys.argv:
         ROOT=ROOT.parent/"tomb"
         EXPECTED={"artefact-plinth","urn-cluster","counterweight-rig","stone-scale","inscribed-stele","mineral-display","survey-chest","dating-table","pillar","stone-seal"}
+    if "--characters" in sys.argv:
+        ROOT=ROOT.parent/"characters"
+        EXPECTED={"torso","helmet","upper-arm","forearm","thigh","boot-leg","glove"}
     manifest=json.loads((ROOT/"manifest.json").read_text(encoding="utf-8"))
     assert manifest["version"]==1, "Unexpected manifest version"
     assert set(manifest["assets"])==EXPECTED, "Missing or unexpected models"
