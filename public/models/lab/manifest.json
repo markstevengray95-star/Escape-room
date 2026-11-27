@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "assets": {
+    "microscope": {
+      "file": "microscope.glb",
+      "bytes": 404088,
+      "sha256": "dcc1bf0504aebc164b4d5efd5d3fbf06ec4fefeacc27d54088e6e2b1c3f7bbf0"
+    },
+    "indicator": {
+      "file": "indicator.glb",
+      "bytes": 274516,
+      "sha256": "998d02ba1924b8b1014894a4cb31a7ef397fda6082fb86ffc5fd762e804d0cad"
+    },
+    "osmosis": {
+      "file": "osmosis.glb",
+      "bytes": 274512,
+      "sha256": "603300c93bd1281115c2ab2e2baa767bbc30c6dc143bcdd63830ce45fd0ee617"
+    },
+    "separation": {
+      "file": "separation.glb",
+      "bytes": 234804,
+      "sha256": "0cd79f8913768570473f7801ad873ca1dd37f014b72b48dad459f8a0b6fb41c9"
+    },
+    "moments": {
+      "file": "moments.glb",
+      "bytes": 179308,
+      "sha256": "178ffab51b6d708056220096007f00dd86d030c157e03c9961b7ff5d9b1291b7"
+    },
+    "density": {
+      "file": "density.glb",
+      "bytes": 227136,
+      "sha256": "cae87602089dd15835f6f00a40451b786c7ca34d6de2b071ccf451f18e9e3934"
+    },
+    "equation": {
+      "file": "equation.glb",
+      "bytes": 371044,
+      "sha256": "ffa407002ed31b8ba43e25c7187520ce440be6fc316170d9ac3438898d0a5500"
+    },
+    "graph": {
+      "file": "graph.glb",
+      "bytes": 348172,
+      "sha256": "150f0578d5dcc5effd2492603538664e7105fe63d38ca96d56d44ed09c4065f6"
+    },
+    "variables": {
+      "file": "variables.glb",
+      "bytes": 365176,
+      "sha256": "e84727a53113d89c2bd956744b8a7431509b7c7524a059c12ec2f9c562bb44c3"
+    },
+    "energy": {
+      "file": "energy.glb",
+      "bytes": 254812,
+      "sha256": "030d030ea7c721c593eaada820ae0ab3f1be8385b8a0c84e83440300c6902853"
+    },
+    "spectrum": {
+      "file": "spectrum.glb",
+      "bytes": 292076,
+      "sha256": "fc62b6a35ca08e0609de3aa42cd0d2bdfbcb6bd3288a8f5aa375f30c95ded1de"
+    },
+    "bench": {
+      "file": "bench.glb",
+      "bytes": 149212,
+      "sha256": "fca9759f95832d0d7071d991c30f90588c081c7dc10b206db32002a8181c4957"
+    }
+  }
+}
