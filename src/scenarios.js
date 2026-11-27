@@ -1,3 +1,4 @@
+import {spaceLayout} from './space-layout.js';
 import {rooms,walls,gates,furniture,objects,spawn,roomAt,stationBox} from './layout.js';
 import {stations} from './puzzles.js';
 export const scenarios={
@@ -11,6 +12,7 @@ export const scenarios={
 export const scenarioIds=Object.keys(scenarios);
 export function scenarioLayout(id='lab'){
  const theme=scenarios[id];if(!theme)throw Error('Unknown escape room.');
+ if(id==='space')return spaceLayout(theme,stations);
  const sx=theme.sx,sz=theme.sz,mx=theme.mirror;const point=(x,z)=>[x*sx*mx,z*sz];
  const box=b=>({...b,x:b.x*sx*mx,z:b.z*sz,w:b.w*sx,d:b.d*sz});
  const rs=rooms.map((r,i)=>({...r,name:theme.names[i],x:r.x*sx*mx,z:r.z*sz,color:id==='lab'?r.color:newColor(theme.wall,i)}));
