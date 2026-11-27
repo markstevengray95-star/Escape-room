@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "assets": {
+    "security-door": {
+      "file": "security-door.glb",
+      "bytes": 296684,
+      "sha256": "06619ef86068a8e6e69b87d49a3d10c54139d5e39d879a00600944889cfc71bf"
+    },
+    "storage-cabinet": {
+      "file": "storage-cabinet.glb",
+      "bytes": 62852,
+      "sha256": "d5d6d3e3938d2620f7f76a7138c9a657c26b79bc7ce2dd0409b55acc8793b42f"
+    },
+    "fume-hood": {
+      "file": "fume-hood.glb",
+      "bytes": 398116,
+      "sha256": "70e3969085d9bd913e3f92545412c6f695005faa78be90c2bbaca0b1527b01af"
+    },
+    "wall-panel": {
+      "file": "wall-panel.glb",
+      "bytes": 93700,
+      "sha256": "bf0eba503c9a9318040a0dcf2fab30c750300d9c20acd88cdc8fc8577eb591a9"
+    },
+    "vent-duct": {
+      "file": "vent-duct.glb",
+      "bytes": 116168,
+      "sha256": "3e311372ecb9e1ca647f0af1f157e5fb5ecc4d29e47184ace413a0ffa5df13af"
+    },
+    "ceiling-light": {
+      "file": "ceiling-light.glb",
+      "bytes": 32288,
+      "sha256": "7f5675ae6258620d61fbf0a1ce9763f7c9d06dd682cc46181508911757cae7ff"
+    },
+    "noticeboard": {
+      "file": "noticeboard.glb",
+      "bytes": 249448,
+      "sha256": "4b201465fbdd999e5d9bab175d18f66f37fd2da165636f78434669903fa7749f"
+    },
+    "keypad": {
+      "file": "keypad.glb",
+      "bytes": 366780,
+      "sha256": "5f1981b8cffa233fa48555b8d4e64e0f843593bfb20db04e146381e43aefa42e"
+    }
+  }
+}
