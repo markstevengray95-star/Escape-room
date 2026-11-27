@@ -1,11 +1,13 @@
+import {explorationAction,needed,items} from './exploration.js';
 import {required} from './curriculum.js';
 import {stations,validateStation} from './puzzles.js';
 export const DURATION=1800;
-export const initialState=()=>({drawer:false,note:false,power:false,door:false,archiveGate:false,archive:false,escaped:false,solved:[]});
+export const initialState=()=>({drawer:false,note:false,power:false,door:false,archiveGate:false,archive:false,escaped:false,solved:[],opened:[],inventory:[]});
 export function transition(s,action,value,variant={current:3,suffix:'14',archiveDigit:'7'}){
  const reject=message=>({state:s,ok:false,message});
  const accept=(patch,message)=>({state:{...s,...patch},ok:true,message});
  if(s.escaped) return reject('Already escaped.');
+ if(variant.exploration){const extra=explorationAction(s,action);if(extra)return extra;const missing=needed(s,action);if(missing.length)return reject('Find '+missing.map(k=>items[k].name).join(', ')+' first.');}
  if(stations.some(p=>p.id===action)){if(['graph','variables'].includes(action)&&!s.archiveGate)return reject('Unlock the analysis lab first.');if(action==='spectrum'&&!s.door)return reject('Unlock the control room first.');if(s.solved.includes(action))return reject('Investigation already completed.');if(!required(variant).includes(action))return reject('This station is not assigned.');const question=variant.questions?.[action];const r=question?(typeof value?.choice==='string'&&value.choice===question.correct?{ok:true,message:question.explanation}:{ok:false,message:'Not quite. Reconsider the evidence and try again.'}):validateStation(action,value,variant);return r.ok?accept({solved:[...s.solved,action]},r.message):reject(r.message);}
  switch(action){
  case 'drawer':return accept({drawer:!s.drawer},s.drawer?'Drawer closed.':'Drawer opened. Inspect the yellow note.');
