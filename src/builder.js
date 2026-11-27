@@ -32,7 +32,7 @@ export function createBuilder({panel,show,net,onBack,onHost}){
  click('export-mission',()=>{try{const mission=checked(),url=URL.createObjectURL(new Blob([JSON.stringify(mission,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='escape-lab-mission.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);report('Export contains the answer key; keep it for teachers only.');}catch(e){report(e.message);}});
  click('import-mission',()=>get('file').click());
  get('file').onchange=async()=>{try{const file=get('file').files[0];if(!file)return;if(file.size>60000)throw Error('Mission file is too large.');const imported=normalizeMission(JSON.parse(await file.text()));if(!confirm('Replace current draft with imported mission?'))return;draft=imported;savedId=null;selected=null;render();report('Imported. Save to keep a local copy.');}catch(e){report(e.message);}};
- click('host-mission',async()=>{let b=get('host-mission');try{const mission=checked();b.disabled=true;await net.call('create',{size:mission.size,options:{mode:'builder',scenario:mission.scenario,minutes:mission.minutes,mission}});panel.classList.remove('builder-panel');onHost();}catch(e){report(e.message);b.disabled=false;}});
+ click('host-mission',async()=>{let b=get('host-mission');try{const mission=checked();b.disabled=true;await net.call('create',{size:mission.size,options:{mode:'builder',scenario:mission.scenario,minutes:mission.minutes,repairs:true,mission}});panel.classList.remove('builder-panel');onHost();}catch(e){report(e.message);b.disabled=false;}});
  click('builder-back',()=>{capture();panel.classList.remove('builder-panel');onBack();});
  }
  return {open};
