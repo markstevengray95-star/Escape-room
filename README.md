@@ -58,3 +58,6 @@ Separate 26 × 26 m biology layout with unequal compartments, decontamination ac
 
 ## Escape Lab 2.0 — Chemical Chaos
 Separate 30 × 24 m chemistry facility with asymmetric wings, offset safety access and reagent stores. Run `Generate Chemistry Facility Assets.bat` and commit `public/models/chem` (nine new original Blender model types). Verify with `python blender/verify_assets.py --chem`. Reuses the earlier fume hood and architecture pack. Includes model fallbacks; dedicated chemistry-specific physical simulations and browser verification remain outstanding. All models are fictional classroom scenery.
+
+## Escape Lab 2.0 — Total Blackout
+Independent 34 × 26 m industrial environment with turbine hall, transformer bay, grid control, workshop, spare parts and diagnostics. Run `Generate Power Station Assets.bat` and commit `public/models/blackout` (nine original decorative model types). Verify with `python blender/verify_assets.py --blackout`. The educational electricity and energy questions are simulations, not real operating procedures. Dedicated 3D machine operation and browser verification remain outstanding.
