@@ -55,3 +55,6 @@ The spacecraft now uses an independent 28 × 22 m asymmetric floor plan, offset 
 
 ## Escape Lab 2.0 — The Secret Experiment
 Separate 26 × 26 m biology layout with unequal compartments, decontamination access, culture/diagnostics/incubation/records/containment wings. Eight default biology questions are mapped to relevant named systems. Run `Generate Biology Facility Assets.bat` and commit `public/models/bio` (nine new original Blender models). Verify using `python blender/verify_assets.py --bio`. Model fallbacks are retained. Dedicated biology simulations and browser testing remain outstanding; all experiments are fictional classroom simulations.
+
+## Escape Lab 2.0 — Chemical Chaos
+Separate 30 × 24 m chemistry facility with asymmetric wings, offset safety access and reagent stores. Run `Generate Chemistry Facility Assets.bat` and commit `public/models/chem` (nine new original Blender model types). Verify with `python blender/verify_assets.py --chem`. Reuses the earlier fume hood and architecture pack. Includes model fallbacks; dedicated chemistry-specific physical simulations and browser verification remain outstanding. All models are fictional classroom scenery.
