@@ -1,0 +1,20 @@
+import * as THREE from 'three';
+const metal=0x657988,dark=0x202e38,white=0xdbe4e5,teal=0x58b9b0,amber=0xe4b15a;
+function mesh(g,geo,c,x,y,z,glow=0){const m=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color:c,roughness:.55,metalness:.18,emissive:glow,emissiveIntensity:.6}));m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;g.add(m);return m;}
+const box=(g,w,h,d,x,y,z,c,glow)=>mesh(g,new THREE.BoxGeometry(w,h,d),c,x,y,z,glow);
+const cyl=(g,r1,r2,h,x,y,z,c)=>mesh(g,new THREE.CylinderGeometry(r1,r2,h,16),c,x,y,z);
+const sphere=(g,r,x,y,z,c,glow)=>mesh(g,new THREE.SphereGeometry(r,12,8),c,x,y,z,glow);
+export function equipmentModel(id,p){
+ const g=new THREE.Group();g.position.set(p.x,1.05,p.z);box(g,.6,.07,.6,0,.04,0,dark);
+ const status=sphere(g,.046,.23,.13,.3,p.color,p.color);let moving=null;
+ if(id==='microscope'){box(g,.36,.07,.43,0,.09,0,white);cyl(g,.065,.065,.38,-.09,.31,-.12,metal).rotation.z=-.24;cyl(g,.055,.07,.22,.025,.49,.025,white).rotation.x=.36;cyl(g,.075,.075,.04,.025,.61,.065,dark);box(g,.33,.045,.27,0,.24,.03,dark);box(g,.23,.015,.09,0,.27,.03,0xa0d4d3);cyl(g,.08,.08,.055,-.19,.32,-.1,dark).rotation.z=Math.PI/2;}
+ else if(['indicator','osmosis','separation'].includes(id)){for(let i=0;i<3;i++){const x=(i-1)*.16;cyl(g,.065,.047,.26,x,.21,0,0xa0d4d3);cyl(g,.052,.046,.14,x,.15,.012,[amber,teal,0xb289ca][i]);cyl(g,.069,.069,.035,x,.355,0,white);}box(g,.5,.06,.23,0,.09,0,metal);if(id==='separation')cyl(g,.11,.018,.16,0,.52,0,white);}
+ else if(id==='moments'){cyl(g,.04,.065,.32,0,.22,0,metal);moving=new THREE.Group();moving.position.y=.41;g.add(moving);box(moving,.58,.045,.07,0,0,0,white);for(const x of [-.22,.22]){cyl(moving,.06,.06,.12,x,-.11,0,amber);box(moving,.018,.12,.018,x,-.055,0,dark);}}
+ else if(id==='density'){box(g,.34,.12,.33,-.08,.12,0,metal);box(g,.23,.025,.22,-.08,.2,0,white);box(g,.15,.11,.15,-.08,.27,0,amber);cyl(g,.075,.075,.43,.21,.28,0,0xa0d4d3);for(let i=0;i<7;i++)box(g,.07,.009,.01,.21,.12+i*.05,.077,dark);}
+ else if(['energy','spectrum'].includes(id)){box(g,.42,.22,.42,0,.17,0,metal);moving=new THREE.Group();moving.position.set(0,.37,.04);g.add(moving);for(let i=0;i<4;i++)box(moving,.045,.045,.21,0,0,0,amber).rotation.y=i*Math.PI/4;box(g,.31,.12,.03,0,.17,.224,teal,0x27635f);}
+ else{box(g,.48,.36,.16,0,.34,-.055,metal);box(g,.4,.26,.018,0,.35,.035,dark);for(let i=0;i<4;i++)box(g,.052,.035+i*.027,.012,-.13+i*.085,.27+i*.013,.047,teal,0x2c7771);box(g,.48,.045,.23,0,.14,.14,white);for(let i=0;i<5;i++)box(g,.055,.01,.04,-.16+i*.08,.167,.14,dark);}
+ const parts=[];g.traverse(o=>{if(o.isMesh)parts.push(o);});return {group:g,status,moving,parts};
+}
+export function avatarModel(){const group=new THREE.Group();box(group,.43,.63,.28,0,1.03,0,teal);box(group,.16,.16,.025,0,1.17,.154,white);sphere(group,.18,0,1.52,0,0xc8a88b);cyl(group,.19,.18,.12,0,1.66,0,white);box(group,.29,.07,.04,0,1.53,.16,dark);const limbs=[];for(const x of [-1,1]){const arm=new THREE.Group();arm.position.set(x*.28,1.21,0);box(arm,.13,.43,.14,0,-.19,0,teal);sphere(arm,.07,0,-.43,0,0xc8a88b);group.add(arm);const leg=new THREE.Group();leg.position.set(x*.115,.66,0);box(leg,.17,.55,.18,0,-.22,0,dark);box(leg,.19,.12,.29,0,-.56,.04,metal);group.add(leg);limbs.push(arm,leg);}return {group,limbs};}
+export function animateAvatar(a,dt,motion){const d=a.group.position.distanceTo(a.target);a.walk=(a.walk||0)+dt*(d>.03?9:0);const s=motion&&d>.03?Math.sin(a.walk)*.48:0;for(let i=0;i<a.limbs.length;i++)a.limbs[i].rotation.x=THREE.MathUtils.lerp(a.limbs[i].rotation.x,s*(i===0||i===3?1:-1),Math.min(1,dt*12));}
+export function floorTexture(id){const c=document.createElement('canvas');c.width=c.height=128;const x=c.getContext('2d');x.fillStyle=id==='tomb'?'#a99a82':'#bfc8cb';x.fillRect(0,0,128,128);x.strokeStyle='#6f7778';x.lineWidth=2;x.strokeRect(0,0,128,128);let seed=117;for(let i=0;i<500;i++){seed=seed*16807%2147483647;const a=seed%128;seed=seed*16807%2147483647;x.fillStyle=i%2?'#ffffff17':'#182b2f15';x.fillRect(a,seed%128,2,1);}const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.colorSpace=THREE.SRGBColorSpace;return t;}
