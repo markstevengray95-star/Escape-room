@@ -1,3 +1,4 @@
+import {guidanceIntervals} from './difficulty.js';
 import {crisisDefinition} from './crisis.js';
 export const directorNames={lab:'Facility Control',space:'Flight Control',bio:'Research Control',chem:'Safety Control',blackout:'Grid Control',tomb:'Survey Control'};
 export function createDirectorModel(){
@@ -22,7 +23,8 @@ export function createDirectorModel(){
   if(snapshot.power&&!old.power){lastEventAt=now;return event('repair','Emergency supply restored. Continue to the control chamber.',2);}
   if(snapshot.ready>old.ready&&now-lastEventAt>8000){lastEventAt=now;return event('ready','A subsystem is ready to activate. Check the final console.',1);}
   if(snapshot.progress>old.progress&&now-lastEventAt>25000){lastEventAt=now;return event('progress','Investigation confirmed. System recovery is progressing.',1);}
-  if(now-lastProgressAt>=90000&&now-lastHintAt>=90000&&now-lastEventAt>20000&&remaining>60&&objective){lastHintAt=lastEventAt=now;return event('guidance','Mission guidance. '+objective+'.',1);}
+  const guidance=guidanceIntervals[crisis.guidance]??guidanceIntervals.standard;
+  if(now-lastProgressAt>=guidance&&now-lastHintAt>=guidance&&now-lastEventAt>20000&&remaining>60&&objective){lastHintAt=lastEventAt=now;return event('guidance','Mission guidance. '+objective+'.',1);}
   return null;
  }
  return {tick,reset,finish(scenario,crisis,win){return event('ending',crisis?.message||(win?crisisDefinition(scenario).success:crisisDefinition(scenario).failure),5);}};
