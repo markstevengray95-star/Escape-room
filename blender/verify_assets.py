@@ -24,6 +24,9 @@ def main():
     if "--blackout" in sys.argv:
         ROOT=ROOT.parent/"blackout"
         EXPECTED={"turbine","generator","transformer","switchgear","control-desk","parts-rack","maintenance-bench","pump-skid","industrial-gate"}
+    if "--tomb" in sys.argv:
+        ROOT=ROOT.parent/"tomb"
+        EXPECTED={"artefact-plinth","urn-cluster","counterweight-rig","stone-scale","inscribed-stele","mineral-display","survey-chest","dating-table","pillar","stone-seal"}
     manifest=json.loads((ROOT/"manifest.json").read_text(encoding="utf-8"))
     assert manifest["version"]==1, "Unexpected manifest version"
     assert set(manifest["assets"])==EXPECTED, "Missing or unexpected models"
